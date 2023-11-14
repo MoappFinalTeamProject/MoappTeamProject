@@ -22,7 +22,7 @@ class MainApp extends StatelessWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: (user != null) ? const MyHomePage() : MyLoginPage(),
+      home: (user != null) ? const MyHomePage() : const MyLoginPage(),
     );
   }
 }
