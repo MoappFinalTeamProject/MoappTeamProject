@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:moapp_team_project/auth/register.dart';
+import 'package:moapp_team_project/pages/home.dart';
 
 class MyLoginPage extends StatefulWidget {
   const MyLoginPage({super.key});
@@ -36,6 +37,13 @@ class _MyLoginPageState extends State<MyLoginPage> {
         print('로그인 실패: $e');
       }
     }
+  }
+
+  void navigateToMainPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const MyHomePage()),
+    );
   }
 
   void navigateToRegisterPage() {
@@ -95,7 +103,8 @@ class _MyLoginPageState extends State<MyLoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
-                    onPressed: signInWithEmail,
+                    onPressed: navigateToMainPage,
+                    //onPressed: signInWithEmail,
                     child: const Text('로그인'),
                   ),
                   const SizedBox(width: 20),
