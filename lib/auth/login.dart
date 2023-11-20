@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:moapp_team_project/src/app_state.dart';
 import 'package:moapp_team_project/auth/register.dart';
-import 'package:moapp_team_project/pages/home.dart';
+import 'package:provider/provider.dart';
 
 class MyLoginPage extends StatefulWidget {
   const MyLoginPage({super.key});
@@ -13,25 +14,27 @@ class MyLoginPage extends StatefulWidget {
 class _MyLoginPageState extends State<MyLoginPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  late String _email;
-  late String _password;
+  late String _email = "";
+  late String _password = "";
 
   void signInWithEmail() async {
     if (_formKey.currentState!.validate()) {
       // 폼 유효성 검사
-
-      _formKey.currentState!.save();
-
       try {
         UserCredential userCredential = await _auth.signInWithEmailAndPassword(
           email: _email,
           password: _password,
         );
-
-        // 로그인 성공 처리
+        if(await FirebaseAuth.instance.currentUser!.emailVerified){
+        print("yes");
         print('로그인 성공!');
         User? user = userCredential.user;
-        // 추가 작업 수행
+        Navigator.pop(context, '/');
+      }
+      else{
+        print("no");
+        //알람 기능 
+      }
       } catch (e) {
         // 로그인 실패 처리
         print('로그인 실패: $e');
@@ -39,17 +42,8 @@ class _MyLoginPageState extends State<MyLoginPage> {
     }
   }
 
-  void navigateToMainPage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const MyHomePage()),
-    );
-  }
-
   void navigateToRegisterPage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const MyRegisterPage()),
+    Navigator.pushNamed(context, '/register',
     );
   }
 
@@ -57,15 +51,15 @@ class _MyLoginPageState extends State<MyLoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Text(""),
         title: const Text('이메일 로그인'),
       ),
       body: Form(
         key: _formKey,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+          child:  OverflowBar(
+            children: <Widget>[
               TextFormField(
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
@@ -76,7 +70,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                   }
                   return null;
                 },
-                onSaved: (value) {
+                onChanged: (value) {
                   setState(() {
                     _email = value!;
                   });
@@ -92,7 +86,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                   }
                   return null;
                 },
-                onSaved: (value) {
+                onChanged: (value) {
                   setState(() {
                     _password = value!;
                   });
@@ -103,8 +97,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
-                    onPressed: navigateToMainPage,
-                    //onPressed: signInWithEmail,
+                    onPressed: signInWithEmail,
                     child: const Text('로그인'),
                   ),
                   const SizedBox(width: 20),
@@ -114,6 +107,8 @@ class _MyLoginPageState extends State<MyLoginPage> {
                   ),
                 ],
               ),
+              Text(_email),
+              Text(_password)
             ],
           ),
         ),
