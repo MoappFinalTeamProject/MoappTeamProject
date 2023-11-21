@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:moapp_team_project/src/app_state.dart';
+import 'package:provider/provider.dart';
 
 class MyRegisterPage extends StatefulWidget {
   const MyRegisterPage({super.key});
@@ -15,6 +17,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
   late String _password = "";
   @override
   Widget build(BuildContext context) {
+    final appstate = Provider.of<ApplicationState>(context);
     return Scaffold(
       
       appBar: AppBar(
@@ -75,6 +78,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                     onPressed: () async {
                       await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _email, password: _password);
                       FirebaseAuth.instance.currentUser?.sendEmailVerification();
+                      appstate.addMember();
                       Navigator.pop(context, '/');
                      // Navigator.pushNamed(context, '/login');
                     },
