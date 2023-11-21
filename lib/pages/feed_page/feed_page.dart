@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class MyFeedPage extends StatefulWidget {
@@ -17,6 +19,14 @@ class _MyFeedPageState extends State<MyFeedPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Feed'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/addFeed');
+            },
+            icon: const Icon(Icons.add),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -67,86 +77,187 @@ class _MyFeedPageState extends State<MyFeedPage> {
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * 0.15,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
-                        border: Border.all(
-                          width: 2,
-                          color: const Color.fromARGB(100, 66, 99, 255),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 10,
-                        ),
-                        child: Row(
-                          children: [
-                            const Expanded(
-                              flex: 1,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CircleAvatar(
-                                    maxRadius: 28,
-                                    child: Icon(
-                                      Icons.abc,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    '22/남/기독교',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const Expanded(
-                              flex: 2,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 8),
-                                    child: Text(
-                                      '제목: ~~~~~~~asdsadasdas',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
+              child: StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('feedList')
+                      .where('category', isEqualTo: dropdownValue)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: snapshot.data!.size,
+                        itemBuilder: (context, index) {
+                          var document = snapshot.data!.docs[index];
+                          var data = document.data();
+                          bool isMine = (data['participant'].contains(
+                              FirebaseAuth.instance.currentUser!.uid));
+                          return GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Center(
+                                      child: Text(
+                                        data['title'],
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
+                                    content: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Container(
+                                          height: 200,
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                                8), // 모서리 둥글기 설정
+                                            border: Border.all(
+                                                color:
+                                                    Colors.grey), // 회색 테두리 설정
+                                            color: Colors.white, // 배경색 설정
+                                          ),
+                                          child: SingleChildScrollView(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(10.0),
+                                              child: Text(
+                                                data['content'],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        Text(
+                                          '${data['start_date']} ~ ${data['end_date']}',
+                                          style: const TextStyle(
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: (isMine)
+                                            ? () {
+                                                Navigator.pop(context);
+                                              }
+                                            : () {
+                                                participateGroup(data);
+                                                Navigator.pop(context);
+                                              },
+                                        child: (isMine)
+                                            ? const SizedBox.shrink()
+                                            : const Text('채팅방 참여'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('닫기'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.15,
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(15),
+                                  border: Border.all(
+                                    width: 2,
+                                    color: (isMine)
+                                        ? Colors.pink
+                                        : const Color.fromARGB(
+                                            100, 66, 99, 255),
                                   ),
-                                  Text('시간: ~~~'),
-                                ],
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 10,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const Expanded(
+                                        flex: 1,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            CircleAvatar(
+                                              maxRadius: 28,
+                                              child: Icon(
+                                                Icons.abc,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 20,
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              data['title'],
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              '${data['start_date']} ~ ${data['end_date']}',
+                                              style: const TextStyle(
+                                                fontSize: 11,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child:
+                                            memberStatus(context, data, isMine),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
-                            Expanded(
-                              flex: 1,
-                              child: joinButton(context),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
+                          );
+                        },
+                      );
+                    } else if (snapshot.hasError) {
+                      return const Center(child: Text('에러가 발생했습니다.'));
+                    } else {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  }),
             )
           ],
         ),
@@ -155,31 +266,56 @@ class _MyFeedPageState extends State<MyFeedPage> {
   }
 }
 
-Widget joinButton(BuildContext context) {
-  return InkWell(
-    onTap: () {
-      print('Join!!');
-    },
-    child: Container(
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(100, 66, 99, 255),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: const Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.person_outline,
-            size: 35,
+Widget memberStatus(
+    BuildContext context, Map<String, dynamic> data, bool isMine) {
+  final uid = FirebaseAuth.instance.currentUser!.uid;
+  return Container(
+    decoration: BoxDecoration(
+      color: (data['uid'] == uid)
+          ? Colors.grey
+          : (isMine)
+              ? Colors.pink
+              : const Color.fromARGB(100, 66, 99, 255),
+      borderRadius: BorderRadius.circular(15),
+    ),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.person_outline,
+          size: 35,
+          color: (data['uid'] == uid)
+              ? Colors.black
+              : (isMine)
+                  ? Colors.white
+                  : Colors.black,
+        ),
+        Text(
+          '${data['participant'].length} / ${data['group_size']}',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: (data['uid'] == uid)
+                ? Colors.black
+                : (isMine)
+                    ? Colors.white
+                    : Colors.black,
           ),
-          Text(
-            'n / 10',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     ),
   );
+}
+
+Future<void> participateGroup(Map<String, dynamic> data) async {
+  final uid = FirebaseAuth.instance.currentUser!.uid;
+  FirebaseFirestore.instance.collection('feedList').doc(data['id']).update({
+    "participant": FieldValue.arrayUnion([uid]),
+  }).then((value) {
+    FirebaseFirestore.instance
+        .collection('chatRoomsList')
+        .doc(data['id'])
+        .update({
+      "participant": FieldValue.arrayUnion([uid]),
+    });
+  });
 }

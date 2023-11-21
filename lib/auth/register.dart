@@ -13,13 +13,12 @@ class MyRegisterPage extends StatefulWidget {
 class _MyRegisterPageState extends State<MyRegisterPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    late String _email = "";
+  late String _email = "";
   late String _password = "";
   @override
   Widget build(BuildContext context) {
     final appstate = Provider.of<ApplicationState>(context);
     return Scaffold(
-      
       appBar: AppBar(
         title: const Text('회원가입 페이지'),
       ),
@@ -27,7 +26,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
         key: _formKey,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
-          child:  OverflowBar(
+          child: OverflowBar(
             children: <Widget>[
               // Consumer<ApplicationState>(
               //     builder: (context, appState, _) => GoogleLogin(
@@ -76,11 +75,14 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                   const SizedBox(width: 20),
                   ElevatedButton(
                     onPressed: () async {
-                      await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _email, password: _password);
-                      FirebaseAuth.instance.currentUser?.sendEmailVerification();
+                      await FirebaseAuth.instance
+                          .createUserWithEmailAndPassword(
+                              email: _email, password: _password);
+                      FirebaseAuth.instance.currentUser
+                          ?.sendEmailVerification();
                       appstate.addMember();
                       Navigator.pop(context, '/');
-                     // Navigator.pushNamed(context, '/login');
+                      // Navigator.pushNamed(context, '/login');
                     },
                     child: const Text('회원가입'),
                   ),
