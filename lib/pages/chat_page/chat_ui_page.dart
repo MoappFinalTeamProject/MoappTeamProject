@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 class ChatRoomUIPage extends StatefulWidget {
   const ChatRoomUIPage({Key? key, required this.data}) : super(key: key);
@@ -142,39 +142,40 @@ class _ChatRoomUIPageState extends State<ChatRoomUIPage>
         child: Column(
           children: [
             DrawerHeader(
-                decoration: const BoxDecoration(
-                  color: Colors.blue,
+              decoration: const BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: SizedBox(
+                width: double.maxFinite,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      '${widget.data['title']}',
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      '(${widget.data['participant'].length} / ${widget.data['group_size']})명 참여 중',
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
                 ),
-                child: SizedBox(
-                  width: double.maxFinite,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                        '${widget.data['title']}',
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        '(${widget.data['participant'].length} / ${widget.data['group_size']})명 참여 중',
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                )),
+              ),
+            ),
             Expanded(
               child: ListView.builder(
                 itemCount: widget.data['participant'].length,
@@ -201,9 +202,18 @@ class _ChatRoomUIPageState extends State<ChatRoomUIPage>
                       }
                       var data = snapshot.data!.docs.first.data();
                       return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: (data['uid'] == uid)
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 10),
+                        child: (data['uid'] == widget.data['host'])
                             ? ListTile(
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                tileColor: (data['uid'] == uid)
+                                    ? const Color.fromARGB(100, 66, 99, 255)
+                                    : Colors.transparent,
                                 leading: CircleAvatar(
                                   radius: 30,
                                   child: Image.asset(
@@ -211,10 +221,18 @@ class _ChatRoomUIPageState extends State<ChatRoomUIPage>
                                     scale: 12,
                                   ),
                                 ),
-                                title: Text('${data['name']} (나)'),
+                                title: Text('${data['name']} (방장)'),
                                 onTap: () {},
                               )
                             : ListTile(
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                tileColor: (data['uid'] == uid)
+                                    ? const Color.fromARGB(100, 66, 99, 255)
+                                    : Colors.transparent,
                                 leading: CircleAvatar(
                                   radius: 30,
                                   child: Image.asset(
@@ -236,52 +254,170 @@ class _ChatRoomUIPageState extends State<ChatRoomUIPage>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  IconButton(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Center(
-                                child: Text(
-                                  '모임을 나가시겠습니까?',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                ),
-                              ),
-                              content: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  TextButton(
-                                    onPressed: () {
-                                      exitGroup(widget.data);
-                                      Navigator.popUntil(
-                                          context,
-                                          (route) =>
-                                              route.settings.name == '/');
-                                    },
-                                    child: const Text('예'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text(
-                                      '아니요',
+                  (widget.data['host'] != uid)
+                      ? IconButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Center(
+                                    child: Text(
+                                      '모임을 나가시겠습니까?',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                      ),
                                     ),
                                   ),
-                                ],
-                              ),
+                                  content: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      TextButton(
+                                        onPressed: () {
+                                          exitGroup(widget.data);
+                                          Navigator.popUntil(
+                                              context,
+                                              (route) =>
+                                                  route.settings.name == '/');
+                                        },
+                                        child: const Text('예'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text(
+                                          '아니요',
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
                             );
                           },
-                        );
-                      },
-                      icon: const Icon(
-                        Icons.exit_to_app,
-                        size: 30,
-                      ))
+                          icon: const Icon(
+                            Icons.exit_to_app,
+                            size: 30,
+                          ),
+                        )
+                      : IconButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Center(
+                                    child: Text(
+                                      '채팅방 설정',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  content: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      ToggleSwitch(
+                                        customWidths: const [90.0, 50.0],
+                                        cornerRadius: 20.0,
+                                        activeBgColors: const [
+                                          [Colors.cyan],
+                                          [Colors.redAccent]
+                                        ],
+                                        activeFgColor: Colors.white,
+                                        inactiveBgColor: Colors.grey,
+                                        inactiveFgColor: Colors.white,
+                                        totalSwitches: 2,
+                                        initialLabelIndex:
+                                            (widget.data['isOpend']) ? 0 : 1,
+                                        labels: const ['입장 허용', ''],
+                                        icons: const [null, Icons.close],
+                                        onToggle: (index) {
+                                          FirebaseFirestore.instance
+                                              .collection('feedList')
+                                              .doc(widget.data['id'])
+                                              .update({
+                                            "isOpend": (index == 0),
+                                          }).then((value) {
+                                            FirebaseFirestore.instance
+                                                .collection('chatRoomsList')
+                                                .doc(widget.data['id'])
+                                                .update({
+                                              "isOpend": (index == 0),
+                                            });
+                                          });
+                                          widget.data['isOpend'] = (index == 0);
+                                        },
+                                      ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: const Center(
+                                                  child: Text(
+                                                    '채팅방을 삭제하시겠습니까?',
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 15,
+                                                    ),
+                                                  ),
+                                                ),
+                                                content: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        removeGroup(widget.data,
+                                                            context);
+                                                      },
+                                                      child: const Text('예'),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: const Text('아니요'),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        },
+                                        child: const Text('모임 끝내기'),
+                                      ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                    ],
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('닫기'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          icon: const Icon(Icons.settings)),
                 ],
               ),
             ),
@@ -446,6 +582,7 @@ class _ChatRoomUIPageState extends State<ChatRoomUIPage>
         "chat": text,
         "name": userName,
         "image_url": imageURL,
+        "type": 'chat',
       }).then((value) {
         setState(() {
           image = null;
@@ -470,7 +607,44 @@ class ChatMessageDesign extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (isMine) {
+    if (data['type'] == 'in') {
+      return const Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: BubbleSpecialOne(
+              text: '유저가 입장하였습니다.',
+              textStyle: TextStyle(
+                color: Colors.white,
+              ),
+              color: Colors.grey,
+              tail: false,
+              isSender: false,
+            ),
+          ),
+        ],
+      );
+    }
+    if (data['type'] == 'out') {
+      return const Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: BubbleSpecialOne(
+              text: '유저가 퇴장하였습니다.',
+              textStyle: TextStyle(
+                color: Colors.white,
+              ),
+              color: Colors.grey,
+              tail: false,
+              isSender: false,
+            ),
+          ),
+        ],
+      );
+    } else if (isMine) {
       return Column(
         children: [
           (data['image_url'].isNotEmpty)
@@ -501,7 +675,7 @@ class ChatMessageDesign extends StatelessWidget {
         children: <Widget>[
           (!isContinuous)
               ? CircleAvatar(
-                  radius: 25,
+                  radius: 23,
                   child: Image.asset(
                     'assets/temp_profile/doggy.png',
                     scale: 17,
@@ -513,7 +687,7 @@ class ChatMessageDesign extends StatelessWidget {
             children: [
               (data['image_url'].isNotEmpty)
                   ? Padding(
-                      padding: EdgeInsets.only(left: (!isContinuous) ? 0 : 40),
+                      padding: EdgeInsets.only(left: (!isContinuous) ? 0 : 46),
                       child: BubbleNormalImage(
                         id: data['image_url'],
                         image: Image.network(data['image_url']),
@@ -525,7 +699,7 @@ class ChatMessageDesign extends StatelessWidget {
                   : Container(),
               (data['chat'].isNotEmpty)
                   ? Padding(
-                      padding: EdgeInsets.only(left: (!isContinuous) ? 0 : 40),
+                      padding: EdgeInsets.only(left: (!isContinuous) ? 0 : 46),
                       child: BubbleSpecialOne(
                         text: data['chat'],
                         color: Colors.grey.shade200,
@@ -544,6 +718,13 @@ class ChatMessageDesign extends StatelessWidget {
 
 Future<void> exitGroup(Map<String, dynamic> data) async {
   final uid = FirebaseAuth.instance.currentUser!.uid;
+  final temp = FirebaseFirestore.instance
+      .collection('chatRoomsList')
+      .doc(data['id'])
+      .collection('messages')
+      .doc();
+  FieldValue time = FieldValue.serverTimestamp();
+
   FirebaseFirestore.instance.collection('feedList').doc(data['id']).update({
     "participant": FieldValue.arrayRemove([uid]),
   }).then((value) {
@@ -553,5 +734,67 @@ Future<void> exitGroup(Map<String, dynamic> data) async {
         .update({
       "participant": FieldValue.arrayRemove([uid]),
     });
-  });
+  }).then((value) async => {
+        await temp.set({
+          "id": temp.id,
+          "uid": uid,
+          "created_at": time,
+          "type": 'out',
+          "image_url": "",
+        })
+      });
+  ;
+}
+
+Future<void> removeGroup(
+    Map<String, dynamic> data, BuildContext context) async {
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (context) {
+      return const Center(
+        child: CircularProgressIndicator(
+          color: Colors.blue,
+        ),
+      );
+    },
+  );
+  await FirebaseFirestore.instance
+      .collection('feedList')
+      .doc(data['id'])
+      .delete();
+
+  QuerySnapshot messagesSnapshot = await FirebaseFirestore.instance
+      .collection('chatRoomsList')
+      .doc(data['id'])
+      .collection('messages')
+      .get();
+
+  for (DocumentSnapshot doc in messagesSnapshot.docs) {
+    if (await checkFileExists("/product_images/${doc["id"]}")) {
+      await FirebaseStorage.instance
+          .ref("/product_images/${doc["id"]}")
+          .delete();
+    }
+    await doc.reference.delete();
+  }
+
+  await FirebaseFirestore.instance
+      .collection('chatRoomsList')
+      .doc(data['id'])
+      .delete()
+      .then((value) =>
+          Navigator.popUntil(context, (route) => route.settings.name == '/'));
+}
+
+Future<bool> checkFileExists(String filePath) async {
+  FirebaseStorage storage = FirebaseStorage.instance;
+  Reference fileRef = storage.ref().child(filePath);
+
+  try {
+    final metadata = await fileRef.getMetadata();
+    return true; // 파일이 존재하는 경우
+  } catch (e) {
+    return false;
+  }
 }
