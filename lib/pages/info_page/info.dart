@@ -1,50 +1,60 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:moapp_team_project/src/app_state.dart';
 import 'package:provider/provider.dart';
 
-class MyRegisterPage extends StatefulWidget {
-  const MyRegisterPage({super.key});
+class MyBasicInfoPage extends StatefulWidget {
+  const MyBasicInfoPage({Key? key}) : super(key: key);
 
   @override
-  State<MyRegisterPage> createState() => _MyRegisterPageState();
+  State<MyBasicInfoPage> createState() => _MyBasicInfoPageState();
 }
 
-class _MyRegisterPageState extends State<MyRegisterPage> 
-with SingleTickerProviderStateMixin{
-  late TabController tabController = TabController(
-    length: 8,
-    vsync: this,
-    initialIndex: 0,
+class _MyBasicInfoPageState extends State<MyBasicInfoPage> {
 
-    /// 탭 변경 애니메이션 시간
-    animationDuration: const Duration(milliseconds: 800),
-  );
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  late String _email = "";
+   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+     late String _email = "";
   late String _password = "";
-
-
   @override
   Widget build(BuildContext context) {
-    final appstate = Provider.of<ApplicationState>(context);
-    final PageController controller = PageController(initialPage: 0);
+     final appstate = Provider.of<ApplicationState>(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('회원가입 페이지'),
+        leading: Text(""),
+        title: Text("WELCOME!"),
       ),
-      body: 
-      Form(
+      body: Form(
         key: _formKey,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: OverflowBar(
+          child: ListView(
             children: <Widget>[
+              ListTile(
+                title:
+                TextFormField(
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                    labelText: '닉네임', hintText: '닉네임을 입력하세요'),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return '이메일을 입력해주세요.';
+                  }
+                  return null;
+                },
+                onChanged: (value) {
+                  setState(() {
+                    _email = value!;
+                  });
+                },
+              ) ,
+
+              trailing: ElevatedButton(onPressed: (){}, child: Text("중복확인"),),
+              ),
               TextFormField(
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
-                    labelText: '이메일', hintText: 'example@example.com'),
+                    labelText: '닉네임', hintText: '닉네임을 입력하세요'),
                 validator: (value) {
                   if (value!.isEmpty) {
                     return '이메일을 입력해주세요.';
@@ -139,5 +149,4 @@ with SingleTickerProviderStateMixin{
       ),
     );
   }
-  
 }

@@ -14,6 +14,12 @@ class ApplicationState extends ChangeNotifier {
     init();
   }
   
+String _currentUserName = "";
+String get currentUserName => _currentUserName;
+void setCurrentUserName(String name){
+  _currentUserName = name;
+  notifyListeners();
+}
 
 int _memberCount = 0;
 int get memberCount => _memberCount;
@@ -74,8 +80,7 @@ StreamSubscription<QuerySnapshot>? _memberSubscription;
     
       data = <String, dynamic>{
         'email': FirebaseAuth.instance.currentUser!.email,
-        //'name': FirebaseAuth.instance.currentUser!.displayName,
-        'name' : ("$memberCount"),
+        'name' : 'new member',
         'uid': FirebaseAuth.instance.currentUser!.uid,
         'timestamp': DateTime.now().millisecondsSinceEpoch,
       };
@@ -87,4 +92,15 @@ StreamSubscription<QuerySnapshot>? _memberSubscription;
     return member.set(data);
   }
 
+  Future<void> updateInformation(String name) {
+
+    final member = FirebaseFirestore.instance
+        .collection('member')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update({
+          'name' : name
+        });
+    notifyListeners();
+    return member;
+  }
 }
