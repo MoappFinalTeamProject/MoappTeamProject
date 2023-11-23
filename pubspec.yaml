@@ -9,11 +9,13 @@ environment:
 dependencies:
   chat_bubbles: ^1.5.0
   cloud_firestore: ^4.13.0
+  dart_openai: ^4.0.0
   firebase_auth: ^4.9.0
   firebase_core: ^2.22.0
   firebase_storage: ^11.5.2
   flutter:
     sdk: flutter
+  flutter_dotenv: ^5.1.0
   google_sign_in: ^6.1.6
   image_picker: ^1.0.4
   provider: ^6.1.1
@@ -29,3 +31,4 @@ flutter:
   assets:
     - assets/temp_profile/kitty.png
     - assets/temp_profile/doggy.png
+    - assets/config/.env
