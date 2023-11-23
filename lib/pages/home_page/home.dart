@@ -121,7 +121,6 @@ docRef.snapshots().listen(
       ),
     );
   }
-
   Padding contentBox(BuildContext context, int num, Color color) {
     return Padding(
                 padding: const EdgeInsets.only(top : 10.0),
