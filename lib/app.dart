@@ -14,7 +14,7 @@ class FinalApp extends StatelessWidget {
       initialRoute: '/login',
       debugShowCheckedModeBanner: false,
       routes: {
-        '/': (BuildContext context) => const NavigationPage(),
+         '/': (BuildContext context) => const NavigationPage(),
         '/login': (BuildContext context) => const MyLoginPage(),
         '/register': (BuildContext context) => const MyRegisterPage(),
         '/addFeed': (BuildContext context) => const AddFeedPage(),
