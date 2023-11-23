@@ -58,17 +58,11 @@ class MyFeedChatRoomList extends StatelessWidget {
                               ),
                               child: Row(
                                 children: [
-                                  CircleAvatar(
+                                  const CircleAvatar(
                                     maxRadius: 28,
-                                    child: (index % 2 == 0)
-                                        ? const Badge(
-                                            label: Text('2'),
-                                            child:
-                                                Icon(Icons.messenger_outline),
-                                          )
-                                        : const Icon(
-                                            Icons.chat,
-                                          ),
+                                    child: Icon(
+                                      Icons.chat,
+                                    ),
                                   ),
                                   const SizedBox(
                                     width: 20,

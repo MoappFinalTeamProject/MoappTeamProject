@@ -3,7 +3,6 @@ import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -21,9 +20,22 @@ class _ChatRoomUIPageState extends State<ChatRoomUIPage>
   final TextEditingController _textController = TextEditingController();
   GlobalKey<ScaffoldState> key = GlobalKey<ScaffoldState>();
   final uid = FirebaseAuth.instance.currentUser!.uid;
-
   XFile? image;
   final ImagePicker picker = ImagePicker();
+  String dropdownValue = "";
+  List<String> list2 = <String>[];
+
+  @override
+  void initState() {
+    dropdownValue = widget.data['group_size'];
+    for (int i = widget.data['participant'].length; i <= 10; i++) {
+      if (i == 1) {
+        i++;
+      }
+      list2.add(i.toString());
+    }
+    super.initState();
+  }
 
   Future getImage() async {
     final XFile? pickedFile =
@@ -324,6 +336,62 @@ class _ChatRoomUIPageState extends State<ChatRoomUIPage>
                                       const SizedBox(
                                         height: 20,
                                       ),
+                                      Container(
+                                        width: 70,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Colors.grey), // 테두리 설정
+                                          borderRadius: BorderRadius.circular(
+                                              4), // 모서리 둥글기 설정
+                                          color: Colors.white, // 배경색 설정
+                                        ),
+                                        child: Align(
+                                          alignment: Alignment.center,
+                                          child: DropdownButton<String>(
+                                            value: dropdownValue,
+                                            icon: const Icon(
+                                                Icons.arrow_drop_down),
+                                            elevation: 16,
+                                            underline: Container(),
+                                            onChanged: (String? value) {
+                                              setState(() {
+                                                dropdownValue = value!;
+                                              });
+                                              FirebaseFirestore.instance
+                                                  .collection('feedList')
+                                                  .doc(widget.data['id'])
+                                                  .update({
+                                                "group_size": dropdownValue,
+                                              }).then((value) {
+                                                FirebaseFirestore.instance
+                                                    .collection('chatRoomsList')
+                                                    .doc(widget.data['id'])
+                                                    .update({
+                                                  "group_size": dropdownValue,
+                                                });
+                                              });
+                                              widget.data['group_size'] =
+                                                  dropdownValue;
+                                            },
+                                            items: list2
+                                                .map<DropdownMenuItem<String>>(
+                                                    (String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(
+                                                  value,
+                                                  style: const TextStyle(
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                              );
+                                            }).toList(),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
                                       ToggleSwitch(
                                         customWidths: const [90.0, 50.0],
                                         cornerRadius: 20.0,
@@ -443,6 +511,8 @@ class _ChatRoomUIPageState extends State<ChatRoomUIPage>
                     .collection('chatRoomsList')
                     .doc(widget.data['id'])
                     .collection('messages')
+                    .where("created_at",
+                        isGreaterThanOrEqualTo: widget.data[uid])
                     .orderBy('created_at', descending: true)
                     .snapshots(),
                 builder: (context, snapshot) {
@@ -733,6 +803,7 @@ Future<void> exitGroup(Map<String, dynamic> data) async {
         .doc(data['id'])
         .update({
       "participant": FieldValue.arrayRemove([uid]),
+      uid: FieldValue.delete(),
     });
   }).then((value) async => {
         await temp.set({

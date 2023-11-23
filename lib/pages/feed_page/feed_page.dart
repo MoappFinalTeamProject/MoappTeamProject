@@ -365,6 +365,7 @@ Future<void> participateGroup(Map<String, dynamic> data) async {
         .doc(data['id'])
         .update({
       "participant": FieldValue.arrayUnion([uid]),
+      uid: time,
     });
   }).then((value) async => {
         await temp.set({
