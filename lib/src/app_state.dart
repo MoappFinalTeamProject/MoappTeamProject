@@ -21,6 +21,12 @@ void setCurrentUserName(String name){
   notifyListeners();
 }
 
+int _currentImageSliderIndex = 0;
+int get currentImageSliderIndex => _currentImageSliderIndex;
+void setCurrentImageSliderIndex(int index){
+  _currentImageSliderIndex = index;
+  notifyListeners();
+}
 int _memberCount = 0;
 int get memberCount => _memberCount;
 
