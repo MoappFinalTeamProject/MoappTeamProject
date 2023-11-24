@@ -5,6 +5,7 @@ import 'package:moapp_team_project/pages/feed_page/feed_page.dart';
 import 'package:moapp_team_project/pages/home_page/home.dart';
 import 'package:moapp_team_project/pages/profile_page/profile_list_page.dart';
 import 'package:moapp_team_project/pages/today_date_page/today_date.dart';
+import 'package:moapp_team_project/test.dart';
 
 class NavigationPage extends StatefulWidget {
   const NavigationPage({super.key});
@@ -14,7 +15,7 @@ class NavigationPage extends StatefulWidget {
 }
 
 class _NavigationPageState extends State<NavigationPage> {
-  int currentPageIndex = 0;
+  int currentPageIndex = 2;
   @override
   Widget build(BuildContext context) {
     final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -65,7 +66,8 @@ class _NavigationPageState extends State<NavigationPage> {
         ],
       ),
       body: <Widget>[
-        const TodayDatePage(),
+        const MyTestPage(),
+        //const TodayDatePage(),
         const MyFeedPage(),
         const MyHomePage(),
         const MyChatRoomListPage(),
