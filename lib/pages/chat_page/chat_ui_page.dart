@@ -526,11 +526,13 @@ class _ChatRoomUIPageState extends State<ChatRoomUIPage>
                           itemBuilder: (context, index) {
                             var document = snapshot.data!.docs[index];
                             var data = document.data();
-                            var continuous =
-                                (index != snapshot.data!.size - 1 &&
-                                    data['uid'] ==
-                                        snapshot.data!.docs[index + 1]
-                                            .data()['uid']);
+                            var continuous = (index !=
+                                    snapshot.data!.size - 1 &&
+                                data['uid'] ==
+                                    snapshot.data!.docs[index + 1]
+                                        .data()['uid'] &&
+                                snapshot.data!.docs[index + 1].data()['type'] ==
+                                    'chat');
                             bool isMine = (data['uid'] == uid);
 
                             return ChatMessageDesign(
@@ -678,14 +680,14 @@ class ChatMessageDesign extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (data['type'] == 'in') {
-      return const Row(
+      return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 20),
+            padding: const EdgeInsets.symmetric(vertical: 20),
             child: BubbleSpecialOne(
-              text: '유저가 입장하였습니다.',
-              textStyle: TextStyle(
+              text: '${data['name']} 유저가 입장하였습니다.',
+              textStyle: const TextStyle(
                 color: Colors.white,
               ),
               color: Colors.grey,

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:moapp_team_project/src/app_state.dart';
+import 'package:provider/provider.dart';
 
 class MyFeedPage extends StatefulWidget {
   const MyFeedPage({super.key});
@@ -16,6 +18,8 @@ class _MyFeedPageState extends State<MyFeedPage> {
 
   @override
   Widget build(BuildContext context) {
+    ApplicationState userName = context.watch<ApplicationState>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Feed'),
@@ -160,7 +164,10 @@ class _MyFeedPageState extends State<MyFeedPage> {
                                                       Navigator.pop(context);
                                                     }
                                                   : () {
-                                                      participateGroup(data);
+                                                      participateGroup(
+                                                          data,
+                                                          userName
+                                                              .currentUserName);
                                                       Navigator.pop(context);
                                                       const snackBar = SnackBar(
                                                         content:
@@ -348,7 +355,8 @@ Widget memberStatus(
   );
 }
 
-Future<void> participateGroup(Map<String, dynamic> data) async {
+Future<void> participateGroup(
+    Map<String, dynamic> data, String userName) async {
   final uid = FirebaseAuth.instance.currentUser!.uid;
   final temp = FirebaseFirestore.instance
       .collection('chatRoomsList')
@@ -374,6 +382,7 @@ Future<void> participateGroup(Map<String, dynamic> data) async {
           "created_at": time,
           "type": 'in',
           "image_url": "",
+          'name': userName,
         })
       });
 }

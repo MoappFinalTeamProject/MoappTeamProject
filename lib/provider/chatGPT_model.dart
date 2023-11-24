@@ -33,7 +33,7 @@ class GPTModel with ChangeNotifier {
           OpenAIChatCompletionChoiceMessageModel(
             content: [
               OpenAIChatCompletionChoiceMessageContentItemModel.text(
-                "다음 글의 내용을 보고 응원의 멘트를 50자 이내로 만들어줘. <$prompt>",
+                "다음 글의 내용을 보고 위로되는 성경 구절 하나 보여줘. <$prompt>",
               ),
             ],
             role: OpenAIChatMessageRole.user,
