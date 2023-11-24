@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:moapp_team_project/pages/chat_page/chat_room_list_page.dart';
 import 'package:moapp_team_project/pages/feed_page/feed_page.dart';
 import 'package:moapp_team_project/pages/home_page/home.dart';
-import 'package:moapp_team_project/pages/profile_page/profile.dart';
+import 'package:moapp_team_project/pages/profile_page/profile_list_page.dart';
 import 'package:moapp_team_project/pages/today_date_page/today_date.dart';
 
 class NavigationPage extends StatefulWidget {
@@ -69,7 +69,7 @@ class _NavigationPageState extends State<NavigationPage> {
         const MyFeedPage(),
         const MyHomePage(),
         const MyChatRoomListPage(),
-        const ProfilePage(),
+        const ProfileListPage(),
       ][currentPageIndex],
     );
   }
