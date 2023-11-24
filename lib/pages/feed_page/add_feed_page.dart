@@ -68,7 +68,7 @@ class _AddFeedPageState extends State<AddFeedPage> {
 
     await tempId.set({
       'title': title,
-      'content': content,
+      'content': (content.trim().isEmpty) ? '설명' : content,
       'start_date': start,
       'end_date': end,
       'category': category,

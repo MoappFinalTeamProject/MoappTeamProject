@@ -43,9 +43,9 @@ class _MyTestPageState extends State<MyTestPage> {
                     ),
                     child: SingleChildScrollView(
                       child: Padding(
-                        padding: EdgeInsets.all(10.0),
+                        padding: const EdgeInsets.all(10.0),
                         child: (result.isOnProgress)
-                            ? Center(
+                            ? const Center(
                                 child: CircularProgressIndicator(),
                               )
                             : Text(result.result),
@@ -53,7 +53,7 @@ class _MyTestPageState extends State<MyTestPage> {
                     ),
                   );
                 } else {
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator(),
                   );
                 }
@@ -68,7 +68,7 @@ class _MyTestPageState extends State<MyTestPage> {
                 textController.clear();
               }
             },
-            child: Text('submit'),
+            child: const Text('submit'),
           ),
         ],
       ),

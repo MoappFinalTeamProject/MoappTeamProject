@@ -8,46 +8,45 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:moapp_team_project/src/member_info_cons.dart';
 
-
 class ApplicationState extends ChangeNotifier {
   ApplicationState() {
     init();
   }
-  
-String _currentUserName = "";
-String get currentUserName => _currentUserName;
-void setCurrentUserName(String name){
-  _currentUserName = name;
-  notifyListeners();
-}
 
-int _currentImageSliderIndex = 0;
-int get currentImageSliderIndex => _currentImageSliderIndex;
-void setCurrentImageSliderIndex(int index){
-  _currentImageSliderIndex = index;
-  notifyListeners();
-}
-int _memberCount = 0;
-int get memberCount => _memberCount;
+  String _currentUserName = "";
+  String get currentUserName => _currentUserName;
+  void setCurrentUserName(String name) {
+    _currentUserName = name;
+    notifyListeners();
+  }
 
-void set_memberCount(){
-  _memberCount++;
-}
+  int _currentImageSliderIndex = 0;
+  int get currentImageSliderIndex => _currentImageSliderIndex;
+  void setCurrentImageSliderIndex(int index) {
+    _currentImageSliderIndex = index;
+    // notifyListeners();
+  }
+
+  int _memberCount = 0;
+  int get memberCount => _memberCount;
+
+  void set_memberCount() {
+    _memberCount++;
+  }
 
   bool _loggedIn = false;
   bool get loggedIn => _loggedIn;
 
-StreamSubscription<QuerySnapshot>? _memberSubscription;
- List<MemberInfoCons> _memberInfo = [];
+  StreamSubscription<QuerySnapshot>? _memberSubscription;
+  List<MemberInfoCons> _memberInfo = [];
 
   List<MemberInfoCons> get memberInfo => _memberInfo;
 
   Future<void> init() async {
-
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) {
         _loggedIn = true;
-        
+
         _memberSubscription = FirebaseFirestore.instance
             .collection('member')
             .orderBy('timestamp', descending: true)
@@ -66,30 +65,28 @@ StreamSubscription<QuerySnapshot>? _memberSubscription;
           }
           notifyListeners();
         });
-
       } else {
         _loggedIn = false;
         _memberInfo = [];
         _memberSubscription?.cancel();
       }
       notifyListeners();
+    });
   }
-  );
 
-  }
   Future<void> addMember() {
     set_memberCount();
     if (!_loggedIn) {
       throw Exception('Must be logged in');
     }
     final data;
-    
-      data = <String, dynamic>{
-        'email': FirebaseAuth.instance.currentUser!.email,
-        'name' : 'new member',
-        'uid': FirebaseAuth.instance.currentUser!.uid,
-        'timestamp': DateTime.now().millisecondsSinceEpoch,
-      };
+
+    data = <String, dynamic>{
+      'email': FirebaseAuth.instance.currentUser!.email,
+      'name': 'new member',
+      'uid': FirebaseAuth.instance.currentUser!.uid,
+      'timestamp': DateTime.now().millisecondsSinceEpoch,
+    };
 
     final member = FirebaseFirestore.instance
         .collection('member')
@@ -99,13 +96,10 @@ StreamSubscription<QuerySnapshot>? _memberSubscription;
   }
 
   Future<void> updateInformation(String name) {
-
     final member = FirebaseFirestore.instance
         .collection('member')
         .doc(FirebaseAuth.instance.currentUser!.uid)
-        .update({
-          'name' : name
-        });
+        .update({'name': name});
     notifyListeners();
     return member;
   }
