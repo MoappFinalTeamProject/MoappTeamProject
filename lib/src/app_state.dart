@@ -99,6 +99,7 @@ class ApplicationState extends ChangeNotifier {
     notifyListeners();
     return member.set(data);
   }
+
   Future<void> addMemberInfo() {
     set_memberCount();
     if (!_loggedIn) {
@@ -111,7 +112,7 @@ class ApplicationState extends ChangeNotifier {
       'birthday': "",
       'age': "",
       'phone number': "",
-      'gender' : "",
+      'gender': "",
     };
 
     final member = FirebaseFirestore.instance
@@ -131,9 +132,9 @@ class ApplicationState extends ChangeNotifier {
     final data;
 
     data = <String, dynamic>{
-      'pic1' : _url[0],
-      'pic2' : _url[1],
-      'pic3' : _url[2],
+      'pic1': _url[0],
+      'pic2': _url[1],
+      'pic3': _url[2],
     };
 
     final member = FirebaseFirestore.instance
@@ -145,23 +146,28 @@ class ApplicationState extends ChangeNotifier {
     return member.set(data);
   }
 
-  Future<void> updateInformation(String name, String birthday, int age, String phoneNum) {
+  Future<void> updateInformation(
+      String name, String birthday, int age, String phoneNum) {
+    FirebaseFirestore.instance
+        .collection('member')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update({
+      'name': name,
+    });
+
     final member = FirebaseFirestore.instance
         .collection('member')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("member info")
         .doc('basic info')
-        .update(
-          {
-            'name': name,
-            'birthday' : birthday,
-            'age' : "${age}",
-            'phone number' : phoneNum,
-            'gender' : _currentGenderIndex == 0? "M" : "W",
-          });
+        .update({
+      'name': name,
+      'birthday': birthday,
+      'age': "${age}",
+      'phone number': phoneNum,
+      'gender': _currentGenderIndex == 0 ? "M" : "W",
+    });
     notifyListeners();
     return member;
   }
-  
 }
-

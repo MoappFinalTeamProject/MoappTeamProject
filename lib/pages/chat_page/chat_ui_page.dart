@@ -655,13 +655,14 @@ class _ChatRoomUIPageState extends State<ChatRoomUIPage>
 
     var querySnapshot = await FirebaseFirestore.instance
         .collection('member')
-        .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('member info')
+        .doc('basic info')
         .get();
-    var documents = querySnapshot.docs;
 
-    if (documents.isNotEmpty) {
-      var userData = documents.first.data();
-      var userName = userData['name'];
+    if (querySnapshot.exists) {
+      var userData = querySnapshot.data();
+      var userName = userData!['name'];
       await temp.set({
         "id": temp.id,
         "uid": uid,
