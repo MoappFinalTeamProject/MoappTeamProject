@@ -48,7 +48,7 @@ class _MyGPTPageState extends State<MyGPTPage> {
                 height: 30,
               ),
               FutureBuilder(
-                  future: result.watiFetchDiaryData(),
+                  future: result.watiFetchData(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return Container(

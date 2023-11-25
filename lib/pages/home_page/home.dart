@@ -6,6 +6,7 @@ import 'package:moapp_team_project/src/app_state.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
@@ -119,7 +120,9 @@ class _MyHomePageState extends State<MyHomePage> {
               contentBox(context, 1, Colors.lightBlue[50]!, () {
                 Navigator.pushNamed(context, '/gptPage');
               }, '오늘의 성경 구절 자동 추천 받기', 'chatGPT 사용해보기'),
-              contentBox(context, 2, Colors.pink[50]!, () {}, '2번 컨텐츠', '이동하기'),
+              contentBox(context, 2, Colors.pink[50]!, () {
+                Navigator.pushNamed(context, '/faceDetect');
+              }, '나의 사진 분석하기', 'MLkit 사용해보기'),
               contentBox(
                   context, 3, Colors.lightGreen[50]!, () {}, '3번 컨텐츠', '이동하기'),
             ],

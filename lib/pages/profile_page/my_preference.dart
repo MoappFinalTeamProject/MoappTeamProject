@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:moapp_team_project/pages/profile_page/matching_onboarding.dart';
-import 'package:moapp_team_project/pages/profile_page/reprot_bug.dart';
+import 'package:moapp_team_project/pages/today_date_page/reprot_bug.dart';
 
 class MyPreference extends StatefulWidget {
   const MyPreference({super.key});
@@ -21,7 +21,6 @@ class _MyPreferenceState extends State<MyPreference> {
             leading: SizedBox(
               width: 24,
               height: 24,
-          
             ),
             title: const Text(
               '매칭 방법 확인하기',
