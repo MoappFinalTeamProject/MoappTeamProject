@@ -87,6 +87,7 @@ with SingleTickerProviderStateMixin{
                         FirebaseAuth.instance.currentUser
                             ?.sendEmailVerification();
                         appstate.addMember();
+                        appstate.addMemberInfo();
                         Navigator.pop(context, '/');
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'weak-password') {

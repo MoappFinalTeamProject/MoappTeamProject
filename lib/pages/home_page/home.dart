@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:moapp_team_project/src/app_state.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
+import 'package:toggle_switch/toggle_switch.dart';
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
 

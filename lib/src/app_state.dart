@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:core';
-import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart'; // new
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,13 +16,20 @@ class ApplicationState extends ChangeNotifier {
   String get currentUserName => _currentUserName;
   void setCurrentUserName(String name) {
     _currentUserName = name;
-    notifyListeners();
+    //notifyListeners();
   }
 
   int _currentImageSliderIndex = 0;
   int get currentImageSliderIndex => _currentImageSliderIndex;
   void setCurrentImageSliderIndex(int index) {
     _currentImageSliderIndex = index;
+    // notifyListeners();
+  }
+
+  int _currentGenderIndex = 0;
+  int get currentGenderIndex => _currentGenderIndex;
+  void SetCurrentGenderIndex(int index) {
+    _currentGenderIndex = index;
     // notifyListeners();
   }
 
@@ -63,7 +69,7 @@ class ApplicationState extends ChangeNotifier {
               ),
             );
           }
-          notifyListeners();
+          //notifyListeners();
         });
       } else {
         _loggedIn = false;
@@ -83,7 +89,6 @@ class ApplicationState extends ChangeNotifier {
 
     data = <String, dynamic>{
       'email': FirebaseAuth.instance.currentUser!.email,
-      'name': 'new member',
       'uid': FirebaseAuth.instance.currentUser!.uid,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
     };
@@ -94,13 +99,46 @@ class ApplicationState extends ChangeNotifier {
     notifyListeners();
     return member.set(data);
   }
+  Future<void> addMemberInfo() {
+    set_memberCount();
+    if (!_loggedIn) {
+      throw Exception('Must be logged in');
+    }
+    final data;
 
-  Future<void> updateInformation(String name) {
+    data = <String, dynamic>{
+      'name': "",
+      'birthday': "",
+      'age': "",
+      'phone number': "",
+      'gender' : "",
+    };
+
     final member = FirebaseFirestore.instance
         .collection('member')
         .doc(FirebaseAuth.instance.currentUser!.uid)
-        .update({'name': name});
+        .collection("member info")
+        .doc('basic info');
+    notifyListeners();
+    return member.set(data);
+  }
+
+  Future<void> updateInformation(String name, String birthday, int age, String phoneNum) {
+    final member = FirebaseFirestore.instance
+        .collection('member')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("member info")
+        .doc('basic info')
+        .update(
+          {
+            'name': name,
+            'birthday' : birthday,
+            'age' : "${age}",
+            'phone number' : phoneNum,
+            'gender' : _currentGenderIndex == 0? "M" : "W",
+          });
     notifyListeners();
     return member;
   }
 }
+
