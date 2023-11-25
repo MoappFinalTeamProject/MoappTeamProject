@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:moapp_team_project/pages/onBorading_page/onBorading.dart';
 import 'package:moapp_team_project/src/app_state.dart';
 import 'package:moapp_team_project/auth/register.dart';
 import 'package:provider/provider.dart';
+import 'package:toggle_switch/toggle_switch.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MyLoginPage extends StatefulWidget {
   const MyLoginPage({super.key});
@@ -18,7 +21,6 @@ class _MyLoginPageState extends State<MyLoginPage> {
   late String _email = "";
   late String _password = "";
   late String _nickname = "";
-
 
   void navigateToRegisterPage() {
     Navigator.pushNamed(
@@ -94,107 +96,70 @@ class _MyLoginPageState extends State<MyLoginPage> {
     );
   }
 
-  ElevatedButton signWithEmail(BuildContext context, ApplicationState appstate) {
+  ElevatedButton signWithEmail(
+      BuildContext context, ApplicationState appstate) {
     return ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      // 폼 유효성 검사
-                      try {
-                        UserCredential userCredential =
-                            await _auth.signInWithEmailAndPassword(
-                          email: _email,
-                          password: _password,
-                        );
-                        if (await FirebaseAuth
-                            .instance.currentUser!.emailVerified) {
-                          print("yes");
-                          print('로그인 성공!');
-                          User? user = userCredential.user;
-                          final memberInformation = FirebaseFirestore.instance
-                              .collection("member")
-                              .doc(FirebaseAuth.instance.currentUser!.uid);
+      onPressed: () async {
+        if (_formKey.currentState!.validate()) {
+          // 폼 유효성 검사
+          try {
+            UserCredential userCredential =
+                await _auth.signInWithEmailAndPassword(
+              email: _email,
+              password: _password,
+            );
+            if (await FirebaseAuth.instance.currentUser!.emailVerified) {
+              print("yes");
+              print('로그인 성공!');
+              User? user = userCredential.user;
+              final memberInformation = FirebaseFirestore.instance
+                  .collection("member")
+                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                  .collection("member info")
+                  .doc("basic info");
 
-                          memberInformation.get().then(
-                            (DocumentSnapshot doc) {
-                              final data = doc.data() as Map<String, dynamic>;
-                              if (data["name"] == "new member") {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                          title: const Text('WELCOME'),
-                                          content: SizedBox(
-                                            height: 90,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text("닉네임 설정이 필요합니다!"),
-                                                TextFormField(
-                                                  decoration:
-                                                      const InputDecoration(
-                                                          labelText: '닉네임',
-                                                          hintText:
-                                                              '닉네임을 입력하세요.'),
-                                                  validator: (value) {
-                                                    if (value!.isEmpty) {
-                                                      return '닉네임을 입력해주세요.';
-                                                    }
-                                                    return null;
-                                                  },
-                                                  onChanged: (value) {
-                                                    setState(() {
-                                                      _nickname = value!;
-                                                    });
-                                                  },
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                appstate.updateInformation(_nickname);
-                                                appstate.setCurrentUserName(_nickname);
-                                                Navigator.pop(context);
-                                                Navigator.pop(context, '/');
-                                              },
-                                              child: const Text('설정'),
-                                            ),
-                                          ],
-                                        ));
-                                //Navigator.pushNamed(context, '/info');
-                              } else {
-                                appstate.setCurrentUserName(_nickname);
-                                Navigator.pop(context, '/');
-                              }
+              memberInformation.get().then(
+                (DocumentSnapshot doc) {
+                  final data = doc.data() as Map<String, dynamic>;
+                  //if (data["name"] == "new member") {
+                  if (data["name"] == "") {
+                    //  Navigator.of(context).push(
+                    //   MaterialPageRoute(
+                    //     builder: (context) => OnBoardingPage(),
+                    //   ),
+                    // );
+                     Navigator.pushNamed(context, '/onBoard');
+                  } else {
+                    appstate.setCurrentUserName(_nickname);
+                    Navigator.pop(context, '/');
+                  }
+                },
+                onError: (e) => print("Error getting document: $e"),
+              );
+            } else {
+              showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        title: const Text('Email verification'),
+                        content: Text('Email 인증을 완료해주세요'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
                             },
-                            onError: (e) =>
-                                print("Error getting document: $e"),
-                          );
-                        } else {
-                          showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                    title: const Text('Email verification'),
-                                    content: Text('Email 인증을 완료해주세요'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text('취소'),
-                                      ),
-                                    ],
-                                  ));
-                          //알람 기능
-                        }
-                      } catch (e) {
-                        // 로그인 실패 처리
-                        print('로그인 실패: $e');
-                      }
-                    }
-                  },
-                  child: const Text('로그인'),
-                );
+                            child: const Text('취소'),
+                          ),
+                        ],
+                      ));
+              //알람 기능
+            }
+          } catch (e) {
+            // 로그인 실패 처리
+            print('로그인 실패: $e');
+          }
+        }
+      },
+      child: const Text('로그인'),
+    );
   }
 }
