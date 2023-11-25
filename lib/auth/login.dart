@@ -130,7 +130,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                     // );
                      Navigator.pushNamed(context, '/onBoard');
                   } else {
-                    appstate.setCurrentUserName(_nickname);
+                    appstate.setCurrentUserName(data["name"]);
                     Navigator.pop(context, '/');
                   }
                 },

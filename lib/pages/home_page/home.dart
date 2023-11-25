@@ -52,7 +52,9 @@ class _MyHomePageState extends State<MyHomePage> {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     final docRef = FirebaseFirestore.instance
         .collection("member")
-        .doc(_auth.currentUser!.uid);
+        .doc(_auth.currentUser!.uid)
+        .collection("member info")
+        .doc("basic info");
     docRef.snapshots().listen((event) {
       appstate.setCurrentUserName(event.data()!["name"]);
     });
