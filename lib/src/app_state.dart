@@ -123,6 +123,28 @@ class ApplicationState extends ChangeNotifier {
     return member.set(data);
   }
 
+  Future<void> addProfilePics(List<String> _url) {
+    set_memberCount();
+    if (!_loggedIn) {
+      throw Exception('Must be logged in');
+    }
+    final data;
+
+    data = <String, dynamic>{
+      'pic1' : _url[0],
+      'pic2' : _url[1],
+      'pic3' : _url[2],
+    };
+
+    final member = FirebaseFirestore.instance
+        .collection('member')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("member info")
+        .doc('profile pictures');
+    notifyListeners();
+    return member.set(data);
+  }
+
   Future<void> updateInformation(String name, String birthday, int age, String phoneNum) {
     final member = FirebaseFirestore.instance
         .collection('member')
@@ -140,5 +162,6 @@ class ApplicationState extends ChangeNotifier {
     notifyListeners();
     return member;
   }
+  
 }
 

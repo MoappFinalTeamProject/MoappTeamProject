@@ -56,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
         .collection("member info")
         .doc("basic info");
     docRef.snapshots().listen((event) {
-      appstate.setCurrentUserName(event.data()!["name"]);
+      //appstate.setCurrentUserName(event.data()!["name"]);
     });
     return Scaffold(
       appBar: AppBar(
