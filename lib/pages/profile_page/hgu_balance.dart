@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:moapp_team_project/pages/profile_page/matching_onboarding.dart';
-import 'package:moapp_team_project/pages/profile_page/reprot_bug.dart';
+import 'package:moapp_team_project/pages/today_date_page/reprot_bug.dart';
 
 class HGUBalance extends StatefulWidget {
   const HGUBalance({super.key});

@@ -128,7 +128,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                     //     builder: (context) => OnBoardingPage(),
                     //   ),
                     // );
-                     Navigator.pushNamed(context, '/onBoard');
+                    Navigator.pushNamed(context, '/onBoard');
                   } else {
                     appstate.setCurrentUserName(data["name"]);
                     Navigator.pop(context, '/');
