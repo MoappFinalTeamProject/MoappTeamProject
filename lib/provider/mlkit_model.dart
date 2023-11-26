@@ -1,7 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:google_ml_kit/google_ml_kit.dart';
+import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:moapp_team_project/provider/face_model.dart';
 
@@ -28,8 +28,8 @@ class MLkitModel with ChangeNotifier {
 
     final InputImage inputImage = InputImage.fromFilePath(image.path);
 
-    final faceRecognizer = GoogleMlKit.vision.faceDetector(
-      FaceDetectorOptions(
+    final faceRecognizer = FaceDetector(
+      options: FaceDetectorOptions(
         enableClassification: true,
         enableLandmarks: true,
       ),
