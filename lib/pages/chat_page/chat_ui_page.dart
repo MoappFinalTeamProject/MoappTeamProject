@@ -465,7 +465,21 @@ class _ChatRoomUIPageState extends State<ChatRoomUIPage>
                                                     TextButton(
                                                       onPressed: () {
                                                         removeGroup(widget.data,
-                                                            context);
+                                                                context)
+                                                            .then((value) {
+                                                          const snackBar =
+                                                              SnackBar(
+                                                            content: Text(
+                                                                '채팅방을 삭제했습니다!'),
+                                                            duration: Duration(
+                                                                milliseconds:
+                                                                    750),
+                                                          );
+                                                          ScaffoldMessenger.of(
+                                                                  context)
+                                                              .showSnackBar(
+                                                                  snackBar);
+                                                        });
                                                       },
                                                       child: const Text('예'),
                                                     ),

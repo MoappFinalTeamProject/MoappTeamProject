@@ -137,6 +137,12 @@ class _MyFaceDetectionState extends State<MyFaceDetection> {
                 onPressed: () {
                   if (image != null) {
                     result.getRecognizedFace(image2!);
+                  } else {
+                    const snackBar = SnackBar(
+                      content: Text('사진을 지정해주세요!'),
+                      duration: Duration(milliseconds: 750),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   }
                 },
                 child: const Text('submit'),
