@@ -117,14 +117,39 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ]),
               Align(alignment: Alignment.bottomCenter, child: indicator()),
-              contentBox(context, 1, Colors.lightBlue[50]!, () {
-                Navigator.pushNamed(context, '/gptPage');
-              }, '오늘의 성경 구절 자동 추천 받기', 'chatGPT 사용해보기'),
-              contentBox(context, 2, Colors.pink[50]!, () {
-                Navigator.pushNamed(context, '/faceDetect');
-              }, '나의 사진 분석하기', 'MLkit 사용해보기'),
               contentBox(
-                  context, 3, Colors.lightGreen[50]!, () {}, '3번 컨텐츠', '이동하기'),
+                context,
+                1,
+                Colors.lightBlue[50]!,
+                () {
+                  Navigator.pushNamed(context, '/gptPage');
+                },
+                '오늘의 성경 구절 자동 추천 받기',
+                'chatGPT 사용해보기',
+              ),
+              contentBox(
+                context,
+                2,
+                Colors.pink[50]!,
+                () {
+                  Navigator.pushNamed(context, '/faceDetect');
+                },
+                '나의 사진 분석하기',
+                'MLkit 사용해보기',
+              ),
+              contentBox(
+                context,
+                3,
+                Colors.lightGreen[50]!,
+                () {
+                  Navigator.pushNamed(context, '/googleMap');
+                },
+                '나의 위치 찾기',
+                'GoogleMap 사용해보기',
+              ),
+              const SizedBox(
+                height: 20,
+              ),
             ],
           ),
         ],
