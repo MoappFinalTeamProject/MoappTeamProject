@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:moapp_team_project/controller/auth_controller.dart';
 import 'package:moapp_team_project/pages/profile_page/logout.dart';
 import 'package:moapp_team_project/pages/profile_page/matching_onboarding.dart';
-import 'package:moapp_team_project/pages/profile_page/reprot_bug.dart';
+import 'package:moapp_team_project/pages/today_date_page/reprot_bug.dart';
 import 'package:provider/provider.dart';
 
 class Setting extends StatefulWidget {
@@ -22,7 +22,7 @@ class _SettingState extends State<Setting> {
         Padding(
           padding: const EdgeInsets.only(left: 8.0),
           child: ListTile(
-            leading: SizedBox(
+            leading: const SizedBox(
               width: 24,
               height: 24,
             ),

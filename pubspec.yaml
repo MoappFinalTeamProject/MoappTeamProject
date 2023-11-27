@@ -22,6 +22,14 @@ dependencies:
   toggle_switch: ^2.1.0
   carousel_slider: ^4.2.1
   smooth_page_indicator: ^1.0.0+2
+  font_awesome_flutter: ^10.6.0
+  onboarding: ^3.1.0
+  intl: ^0.18.1
+  async: ^2.11.0 
+  google_mlkit_face_detection: ^0.9.0
+  google_mlkit_commons: ^0.6.1
+  google_maps_flutter: ^2.5.0
+  geolocator: ^10.1.0
 
 dev_dependencies:
   flutter_test:

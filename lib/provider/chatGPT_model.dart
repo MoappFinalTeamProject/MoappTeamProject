@@ -50,7 +50,7 @@ class GPTModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> watiFetchDiaryData() async {
+  Future<bool> watiFetchData() async {
     if (!isOnProgress) {
       return true;
     }

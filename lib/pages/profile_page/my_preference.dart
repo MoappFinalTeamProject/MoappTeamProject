@@ -1,92 +1,97 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:moapp_team_project/pages/profile_page/matching_onboarding.dart';
-import 'package:moapp_team_project/pages/profile_page/reprot_bug.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MyPreference extends StatefulWidget {
-  const MyPreference({super.key});
+  const MyPreference({Key? key}) : super(key: key);
 
   @override
-  State<MyPreference> createState() => _MyPreferenceState();
+  _MyPreferenceState createState() => _MyPreferenceState();
 }
 
 class _MyPreferenceState extends State<MyPreference> {
+  Map<String, bool> hobbyCategories = {
+    '운동': false,
+    '독서': false,
+    '드라마 시청': false,
+    '영화 시청': false,
+    '게임': false,
+    '요리': false,
+    '노래 부르기': false,
+    '노래방 가기': false,
+  };
+
+  Map<String, bool> foodCategories = {
+    '한식': false,
+    '중식': false,
+    '일식': false,
+    '양식': false,
+  };
+
+  void savePreferences() {
+    FirebaseFirestore.instance
+        .collection('member')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('member info')
+        .doc('preference')
+        .set({
+      'hobby': hobbyCategories,
+      'food': foodCategories,
+    });
+  }
+
+  Widget buildCategory(String title, Map<String, bool> categories) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        Wrap(
+          spacing: 10.0,
+          runSpacing: 0.0,
+          children: categories.keys.map((String key) {
+            return OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                backgroundColor: categories[key] ?? false
+                    ? Color.fromARGB(255, 80, 133, 223)
+                    : Colors.grey[300],
+              ),
+              onPressed: () {
+                setState(() {
+                  categories[key] = !(categories[key] ?? false);
+                  savePreferences();
+                });
+              },
+              child: Text(
+                key,
+                style: TextStyle(
+                  color: categories[key] ?? false ? Colors.white : Colors.black,
+                  fontSize: 18,
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+        const SizedBox(height: 15),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: ListTile(
-            leading: SizedBox(
-              width: 24,
-              height: 24,
-          
-            ),
-            title: const Text(
-              '매칭 방법 확인하기',
-              style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w400,
-                color: Color(0xff3E3E3E),
-              ),
-            ),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const MatchingOnboarding()));
-            },
-          ),
+    return Scaffold(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            buildCategory('취미', hobbyCategories),
+            buildCategory('음식', foodCategories),
+          ],
         ),
-        const Divider(
-          height: 10,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: ListTile(
-            leading: SizedBox(
-                width: 24,
-                height: 24,
-                child: Image.asset("assets/icons/help.png")),
-            title: const Text(
-              '고객센터',
-              style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w400,
-                color: Color(0xff3E3E3E),
-              ),
-            ),
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const ReportBug()));
-            },
-          ),
-        ),
-        const Divider(
-          height: 10,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: ListTile(
-            leading: SizedBox(
-                width: 24,
-                height: 24,
-                child: Image.asset("assets/icons/exit.png")),
-            title: const Text(
-              '로그아웃',
-              style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w400,
-                color: Color(0xff3E3E3E),
-              ),
-            ),
-            onTap: () {
-              FirebaseAuth.instance.signOut();
-            },
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

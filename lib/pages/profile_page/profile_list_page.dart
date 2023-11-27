@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:moapp_team_project/pages/profile_page/edit_information.dart';
 import 'package:moapp_team_project/pages/profile_page/setting.dart';
 import 'package:moapp_team_project/pages/profile_page/my_information.dart';
 import 'package:moapp_team_project/pages/profile_page/my_preference.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:moapp_team_project/src/app_state.dart';
+import 'package:provider/provider.dart';
 
 class ProfileListPage extends StatefulWidget {
   const ProfileListPage({super.key});
@@ -34,6 +38,8 @@ class _ProfileListPageState extends State<ProfileListPage>
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<ApplicationState>(context, listen: false);
+
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -43,13 +49,42 @@ class _ProfileListPageState extends State<ProfileListPage>
               expandedHeight: 500.0,
               floating: false,
               pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: true,
-                background: Image.asset(
-                  'assets/images/profile1.png',
-                  fit: BoxFit.cover,
+              actions: <Widget>[
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EditInformationPage()),
+                    );
+                  },
                 ),
-              ),
+              ],
+              flexibleSpace: FutureBuilder<List<String>>(
+                  future: appState.getProfilePics(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    return FlexibleSpaceBar(
+                      centerTitle: true,
+                      background: CarouselSlider(
+                        options: CarouselOptions(height: 500.0),
+                        items: snapshot.data!.map((i) {
+                          return Builder(
+                            builder: (BuildContext context) {
+                              return Container(
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(color: Colors.amber),
+                                child: Image.network(i, fit: BoxFit.cover),
+                              );
+                            },
+                          );
+                        }).toList(),
+                      ),
+                    );
+                  }),
               bottom: TabBar(
                 controller: myTabController,
                 tabs: myTabs,

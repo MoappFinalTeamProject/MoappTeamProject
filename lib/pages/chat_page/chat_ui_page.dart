@@ -336,58 +336,73 @@ class _ChatRoomUIPageState extends State<ChatRoomUIPage>
                                       const SizedBox(
                                         height: 20,
                                       ),
-                                      Container(
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Colors.grey), // 테두리 설정
-                                          borderRadius: BorderRadius.circular(
-                                              4), // 모서리 둥글기 설정
-                                          color: Colors.white, // 배경색 설정
-                                        ),
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: DropdownButton<String>(
-                                            value: dropdownValue,
-                                            icon: const Icon(
-                                                Icons.arrow_drop_down),
-                                            elevation: 16,
-                                            underline: Container(),
-                                            onChanged: (String? value) {
-                                              setState(() {
-                                                dropdownValue = value!;
-                                              });
-                                              FirebaseFirestore.instance
-                                                  .collection('feedList')
-                                                  .doc(widget.data['id'])
-                                                  .update({
-                                                "group_size": dropdownValue,
-                                              }).then((value) {
-                                                FirebaseFirestore.instance
-                                                    .collection('chatRoomsList')
-                                                    .doc(widget.data['id'])
-                                                    .update({
-                                                  "group_size": dropdownValue,
-                                                });
-                                              });
-                                              widget.data['group_size'] =
-                                                  dropdownValue;
-                                            },
-                                            items: list2
-                                                .map<DropdownMenuItem<String>>(
-                                                    (String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text(
-                                                  value,
-                                                  style: const TextStyle(
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                              );
-                                            }).toList(),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          const Text('인원수 설정:'),
+                                          const SizedBox(
+                                            width: 10,
                                           ),
-                                        ),
+                                          Container(
+                                            width: 70,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.grey), // 테두리 설정
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      4), // 모서리 둥글기 설정
+                                              color: Colors.white, // 배경색 설정
+                                            ),
+                                            child: Align(
+                                              alignment: Alignment.center,
+                                              child: DropdownButton<String>(
+                                                value: dropdownValue,
+                                                icon: const Icon(
+                                                    Icons.arrow_drop_down),
+                                                elevation: 16,
+                                                underline: Container(),
+                                                onChanged: (String? value) {
+                                                  setState(() {
+                                                    dropdownValue = value!;
+                                                  });
+                                                  FirebaseFirestore.instance
+                                                      .collection('feedList')
+                                                      .doc(widget.data['id'])
+                                                      .update({
+                                                    "group_size": dropdownValue,
+                                                  }).then((value) {
+                                                    FirebaseFirestore.instance
+                                                        .collection(
+                                                            'chatRoomsList')
+                                                        .doc(widget.data['id'])
+                                                        .update({
+                                                      "group_size":
+                                                          dropdownValue,
+                                                    });
+                                                  });
+                                                  widget.data['group_size'] =
+                                                      dropdownValue;
+                                                },
+                                                items: list2.map<
+                                                        DropdownMenuItem<
+                                                            String>>(
+                                                    (String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(
+                                                      value,
+                                                      style: const TextStyle(
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  );
+                                                }).toList(),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                       const SizedBox(
                                         height: 20,
@@ -450,7 +465,21 @@ class _ChatRoomUIPageState extends State<ChatRoomUIPage>
                                                     TextButton(
                                                       onPressed: () {
                                                         removeGroup(widget.data,
-                                                            context);
+                                                                context)
+                                                            .then((value) {
+                                                          const snackBar =
+                                                              SnackBar(
+                                                            content: Text(
+                                                                '채팅방을 삭제했습니다!'),
+                                                            duration: Duration(
+                                                                milliseconds:
+                                                                    750),
+                                                          );
+                                                          ScaffoldMessenger.of(
+                                                                  context)
+                                                              .showSnackBar(
+                                                                  snackBar);
+                                                        });
                                                       },
                                                       child: const Text('예'),
                                                     ),
@@ -640,13 +669,14 @@ class _ChatRoomUIPageState extends State<ChatRoomUIPage>
 
     var querySnapshot = await FirebaseFirestore.instance
         .collection('member')
-        .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('member info')
+        .doc('basic info')
         .get();
-    var documents = querySnapshot.docs;
 
-    if (documents.isNotEmpty) {
-      var userData = documents.first.data();
-      var userName = userData['name'];
+    if (querySnapshot.exists) {
+      var userData = querySnapshot.data();
+      var userName = userData!['name'];
       await temp.set({
         "id": temp.id,
         "uid": uid,
@@ -699,14 +729,14 @@ class ChatMessageDesign extends StatelessWidget {
       );
     }
     if (data['type'] == 'out') {
-      return const Row(
+      return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 20),
+            padding: const EdgeInsets.symmetric(vertical: 20),
             child: BubbleSpecialOne(
-              text: '유저가 퇴장하였습니다.',
-              textStyle: TextStyle(
+              text: '${data['name']} 유저가 퇴장하였습니다.',
+              textStyle: const TextStyle(
                 color: Colors.white,
               ),
               color: Colors.grey,
