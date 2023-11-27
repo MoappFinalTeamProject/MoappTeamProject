@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moapp_team_project/auth/login.dart';
 import 'package:moapp_team_project/auth/register.dart';
+import 'package:moapp_team_project/controller/auth_controller.dart';
 import 'package:moapp_team_project/pages/feed_page/add_feed_page.dart';
 import 'package:moapp_team_project/pages/navigation.dart';
 import 'package:moapp_team_project/provider/chatGPT_model.dart';
@@ -15,6 +16,9 @@ class FinalApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (context) => GPTModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => AuthController(),
         ),
       ],
       child: MaterialApp(

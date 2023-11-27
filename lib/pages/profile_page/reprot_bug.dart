@@ -6,7 +6,7 @@ class ReportBug extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
+    //double width = MediaQuery.of(context).size.width;
     // final settingService = SettingService();
 
     return Scaffold(

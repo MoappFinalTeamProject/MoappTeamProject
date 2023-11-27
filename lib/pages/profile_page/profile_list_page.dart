@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:moapp_team_project/pages/profile_page/hgu_balance.dart';
+import 'package:moapp_team_project/pages/profile_page/setting.dart';
 import 'package:moapp_team_project/pages/profile_page/my_information.dart';
 import 'package:moapp_team_project/pages/profile_page/my_preference.dart';
 
@@ -62,7 +62,7 @@ class _ProfileListPageState extends State<ProfileListPage>
           children: const [
             MyInformation(),
             MyPreference(),
-            HGUBalance(),
+            Setting(),
           ],
         ),
       ),
