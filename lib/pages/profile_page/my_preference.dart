@@ -26,6 +26,7 @@ class _MyPreferenceState extends State<MyPreference> {
     '중식': false,
     '일식': false,
     '양식': false,
+    '베트남식': false,
   };
 
   void savePreferences() {
