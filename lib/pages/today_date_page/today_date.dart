@@ -27,10 +27,12 @@ class _TodayDatePageState extends State<TodayDatePage> {
         .doc('preference')
         .get();
 
-    setState(() {
-      userPreferences =
-          Map<String, bool>.from(snapshot.data() as Map<String, dynamic>);
-    });
+    setState(
+      () {
+        userPreferences =
+            Map<String, bool>.from(snapshot.data() as Map<String, dynamic>);
+      },
+    );
 
     findRecommendedUsers();
   }
