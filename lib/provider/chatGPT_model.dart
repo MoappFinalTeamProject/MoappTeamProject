@@ -20,7 +20,7 @@ class GPTModel with ChangeNotifier {
         //  사용하는 모델
         model: 'gpt-3.5-turbo',
         //  출력의 최대 토큰 수 (기본값; 50)
-        maxTokens: 100,
+        maxTokens: 200,
         //  창의성, 수치와 비례함 (기본값: 0.5)
         temperature: 1,
         //  답변의 확률 분포 상위 p%, 단어의 다양성 (기본값: 1)
