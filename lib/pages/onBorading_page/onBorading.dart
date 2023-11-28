@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -146,12 +147,12 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           ),
         ),
         child: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.90,
+          height: MediaQuery.of(context).size.height * 0.95,
           child: SingleChildScrollView(
             controller: ScrollController(),
             child: Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: 45.0,
+                horizontal: MediaQuery.of(context).size.width * 0.1,
               ),
               child: Column(
                 children: [
@@ -490,11 +491,11 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
   Future<void> uploadImage(File? _image1, File? _image2, File? _image3) async {
     FirebaseStorage _storage = FirebaseStorage.instance;
-    Reference _ref1 = _storage.ref("profile/image1.png");
+    Reference _ref1 = _storage.ref("profile/${FirebaseAuth.instance.currentUser!.uid}/image1.png");
     _ref1.putFile(_image1!);
-    Reference _ref2 = _storage.ref("profile/image2.png");
+    Reference _ref2 = _storage.ref("profile/${FirebaseAuth.instance.currentUser!.uid}/image2.png");
     _ref2.putFile(_image2!);
-    Reference _ref3 = _storage.ref("profile/image3.png");
+    Reference _ref3 = _storage.ref("profile/${FirebaseAuth.instance.currentUser!.uid}/image3.png");
     _ref3.putFile(_image3!);
   }
 
@@ -761,6 +762,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   }
 
   Material signupButton(ApplicationState appstate, BuildContext context) {
+    print("work");
     return Material(
       borderRadius: defaultProceedButtonBorderRadius,
       color: defaultProceedButtonColor,
@@ -777,33 +779,11 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                   isChecked[4] &&
                   isChecked[5]) {
                 uploadImage(_image1, _image2, _image3);
-                Future.delayed(const Duration(milliseconds: 1000), () async {
-                  //print("product_count after : ${product_count}");
-                  Reference _ref1 = FirebaseStorage.instance
-                      .ref()
-                      .child('profile/image1.png');
-                  Reference _ref2 = FirebaseStorage.instance
-                      .ref()
-                      .child('profile/image2.png');
-                  Reference _ref3 = FirebaseStorage.instance
-                      .ref()
-                      .child('profile/image3.png');
-                  List<String> _url = [
-                    await _ref1.getDownloadURL(),
-                    await _ref2.getDownloadURL(),
-                    await _ref3.getDownloadURL(),
-                  ];
-                  url[0] = _url[0];
-                  url[1] = _url[1];
-                  url[2] = _url[2];
-                  appstate.updateInformation(
+                appstate.updateInformation(
                       _name, _birthday, _age, _phoneNumber);
-                  appstate.addProfilePics(url);
                   appstate.setCurrentUserName(_name);
-                }).then((value) {
                   Navigator.pop(context);
                   Navigator.pop(context, '/');
-                });
               }
               else{
                 ScaffoldMessenger.of(context).showSnackBar(
