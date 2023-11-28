@@ -6,11 +6,13 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:moapp_team_project/provider/mlkit_model.dart';
 import 'package:moapp_team_project/pages/profile_page/my_preference.dart';
 import 'package:moapp_team_project/src/app_state.dart';
 import 'package:onboarding/onboarding.dart';
 import 'package:provider/provider.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:tuple/tuple.dart';
 
 class OnBoardingPage extends StatefulWidget {
   const OnBoardingPage({Key? key}) : super(key: key);
@@ -33,6 +35,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   File? _image1;
   File? _image2;
   File? _image3;
+  XFile? _image1_1;
+  XFile? _image2_1;
+  XFile? _image3_1;
   final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
   DateTime _selectedDate = DateTime(2000, 1, 1); // 변수를 초기화합니다.
   int _age = 0;
@@ -481,10 +486,13 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
         switch (num) {
           case 1:
             _image1 = File(pickedFile.path); //가져온 이미지를 _image에 저장
+            _image1_1 = XFile(pickedFile.path);
           case 2:
             _image2 = File(pickedFile.path); //가져온 이미지를 _image에 저장
+            _image2_1 = XFile(pickedFile.path);
           case 3:
             _image3 = File(pickedFile.path); //가져온 이미지를 _image에 저장
+            _image3_1 = XFile(pickedFile.path);
         }
       });
     }
@@ -763,6 +771,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   }
 
   Material signupButton(ApplicationState appstate, BuildContext context) {
+    MLkitModel result = context.watch<MLkitModel>();
     return Material(
       borderRadius: defaultProceedButtonBorderRadius,
       color: defaultProceedButtonColor,
@@ -772,43 +781,88 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           List<String> url = ["", "", ""];
           if (_formKey.currentState!.validate()) {
             if (!(_image1 == null || _image2 == null || _image3 == null)) {
-              if (isChecked[0] &&
-                  isChecked[1] &&
-                  isChecked[2] &&
-                  isChecked[3] &&
-                  isChecked[4] &&
-                  isChecked[5]) {
-                uploadImage(_image1, _image2, _image3);
-                Future.delayed(const Duration(milliseconds: 1000), () async {
-                  //print("product_count after : ${product_count}");
-                  Reference _ref1 = FirebaseStorage.instance
-                      .ref()
-                      .child('profile/image1.png');
-                  Reference _ref2 = FirebaseStorage.instance
-                      .ref()
-                      .child('profile/image2.png');
-                  Reference _ref3 = FirebaseStorage.instance
-                      .ref()
-                      .child('profile/image3.png');
-                  List<String> _url = [
-                    await _ref1.getDownloadURL(),
-                    await _ref2.getDownloadURL(),
-                    await _ref3.getDownloadURL(),
-                  ];
-                  url[0] = _url[0];
-                  url[1] = _url[1];
-                  url[2] = _url[2];
-                  appstate.updateInformation(
-                      _name, _birthday, _age, _phoneNumber);
-                  appstate.addProfilePics(url);
-                  appstate.setCurrentUserName(_name);
-                }).then((value) {
-                  Navigator.pop(context);
-                  Navigator.pop(context, '/');
-                });
+              Tuple2<bool, int> val1 =
+                  await result.getRecognizedFace(_image1_1!);
+              Tuple2<bool, int> val2 =
+                  await result.getRecognizedFace(_image2_1!);
+              Tuple2<bool, int> val3 =
+                  await result.getRecognizedFace(_image3_1!);
+              if (val1.item1 && val2.item1 && val3.item1) {
+                if (val1.item2 == 1 && val2.item2 == 1 && val3.item2 == 1) {
+                  if (isChecked[0] &&
+                      isChecked[1] &&
+                      isChecked[2] &&
+                      isChecked[3] &&
+                      isChecked[4] &&
+                      isChecked[5]) {
+                    uploadImage(_image1, _image2, _image3);
+                    Future.delayed(const Duration(milliseconds: 1000),
+                        () async {
+                      //print("product_count after : ${product_count}");
+                      Reference _ref1 = FirebaseStorage.instance
+                          .ref()
+                          .child('profile/image1.png');
+                      Reference _ref2 = FirebaseStorage.instance
+                          .ref()
+                          .child('profile/image2.png');
+                      Reference _ref3 = FirebaseStorage.instance
+                          .ref()
+                          .child('profile/image3.png');
+                      List<String> _url = [
+                        await _ref1.getDownloadURL(),
+                        await _ref2.getDownloadURL(),
+                        await _ref3.getDownloadURL(),
+                      ];
+                      url[0] = _url[0];
+                      url[1] = _url[1];
+                      url[2] = _url[2];
+                      appstate.updateInformation(
+                          _name, _birthday, _age, _phoneNumber);
+                      appstate.addProfilePics(url);
+                      appstate.setCurrentUserName(_name);
+                    }).then((value) {
+                      Navigator.pop(context);
+                      Navigator.pop(context, '/');
+                    });
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('모든 항목을 체크해주세요.')),
+                    );
+                  }
+                } else {
+                  List imageList = [];
+                  if (val1.item2 != 1) {
+                    imageList.add("1번");
+                  }
+                  if (val2.item2 != 1) {
+                    imageList.add("2번");
+                  }
+                  if (val3.item2 != 1) {
+                    imageList.add("3번");
+                  }
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text(
+                            '한명의 얼굴이 있는 이미지를 업로드해주세요.\n(${imageList.join(', ')} 이미지).')),
+                  );
+                }
               } else {
+                List imageList = [];
+                if (!val1.item1) {
+                  imageList.add("1번");
+                }
+                if (!val2.item1) {
+                  imageList.add("2번");
+                }
+                if (!val3.item1) {
+                  imageList.add("3번");
+                }
+
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('모든 항목을 체크해주세요.')),
+                  SnackBar(
+                      content: Text(
+                          '얼굴이 잘인식되는 이미지를 업로드해주세요.\n(${imageList.join(', ')} 이미지).')),
                 );
               }
             } else {
