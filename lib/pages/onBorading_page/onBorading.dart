@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:moapp_team_project/pages/profile_page/my_preference.dart';
 import 'package:moapp_team_project/src/app_state.dart';
 import 'package:onboarding/onboarding.dart';
 import 'package:provider/provider.dart';
@@ -320,23 +321,24 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           height: MediaQuery.of(context).size.height * 0.90,
           child: SingleChildScrollView(
             controller: ScrollController(),
-            child: Padding(
+            child: const Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: 45.0,
               ),
               child: Column(
                 children: [
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.symmetric(vertical: 90),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Third page',
+                        '나의 선호',
                         style: pageStyle,
                         textAlign: TextAlign.left,
                       ),
                     ),
                   ),
+                  MyPreference(),
                 ],
               ),
             ),
@@ -804,11 +806,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                   Navigator.pop(context);
                   Navigator.pop(context, '/');
                 });
-              }
-              else{
+              } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('모든 항목을 체크해주세요.')),
-              );
+                  const SnackBar(content: Text('모든 항목을 체크해주세요.')),
+                );
               }
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
