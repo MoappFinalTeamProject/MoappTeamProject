@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:moapp_team_project/controller/auth_controller.dart';
 import 'package:moapp_team_project/pages/profile_page/logout.dart';
 import 'package:moapp_team_project/pages/profile_page/matching_onboarding.dart';
-import 'package:moapp_team_project/pages/today_date_page/reprot_bug.dart';
+import 'package:moapp_team_project/pages/profile_page/reprot_bug.dart';
 import 'package:provider/provider.dart';
 
 class Setting extends StatefulWidget {
