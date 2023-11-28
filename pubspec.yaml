@@ -43,6 +43,6 @@ flutter:
     - assets/temp_profile/kitty.png
     - assets/temp_profile/doggy.png
     - assets/config/.env
-    - assets\icons\help.png
-    - assets\icons\exit.png
+    - assets/icons/help.png
+    - assets/icons/exit.png
 

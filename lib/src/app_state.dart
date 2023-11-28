@@ -49,6 +49,7 @@ class ApplicationState extends ChangeNotifier {
 
   List<MemberInfoCons> get memberInfo => _memberInfo;
 
+
   Future<void> init() async {
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) {
@@ -63,7 +64,6 @@ class ApplicationState extends ChangeNotifier {
           for (final document in snapshot.docs) {
             _memberInfo.add(
               MemberInfoCons(
-                name: document.data()['name'] as String,
                 email: document.data()['email'] as String,
                 uid: document.data()['uid'] as String,
                 time: document.data()['timestamp'] as int,
