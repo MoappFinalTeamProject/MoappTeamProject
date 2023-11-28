@@ -1,13 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class MyInformation extends StatelessWidget {
-  const MyInformation({super.key});
+class MyInformation extends StatefulWidget {
+  const MyInformation({Key? key}) : super(key: key);
 
-  //get data => null;
+  @override
+  _MyInformationState createState() => _MyInformationState();
+}
+
+class _MyInformationState extends State<MyInformation> {
+  final user = FirebaseAuth.instance.currentUser;
+  Map<String, dynamic>? data;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    initializeData();
+  }
+
+  Future<void> initializeData() async {
+    final fetchedData = await FirebaseFirestore.instance
+        .collection('member')
+        .doc(user!.uid)
+        .collection('member info')
+        .doc('basic info')
+        .get();
+    if (mounted) {
+      setState(() {
+        data = fetchedData.data();
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
+    if (_isLoading) {
+      return CircularProgressIndicator();
+    }
+
+    return Padding(
       padding: EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
         children: [
@@ -21,41 +55,59 @@ class MyInformation extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          height: 5,
-                        ),
+                        SizedBox(height: 5),
                         Text(
-                          'name',
+                          data!['name'], // 이름
                           style: TextStyle(
                             color: Color(0xff3E3E3E),
                             fontSize: 25,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
-                        SizedBox(
-                          height: 10,
-                        ),
+                        SizedBox(height: 10),
                         Text(
-                          'email',
+                          'Email : ${user!.email!}', // 이메일
                           style: TextStyle(
                             color: Color(0xff3E3E3E),
                             fontSize: 13,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
-                        SizedBox(
-                          height: 1,
-                        ),
+                        SizedBox(height: 1),
                         Text(
-                          'phone',
+                          'PhoneNumber : ' + data!['phone number'], // 전화번호
                           style: TextStyle(
                             color: Color(0xff3E3E3E),
                             fontSize: 13,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
-                        SizedBox(
-                          height: 1,
+                        SizedBox(height: 1),
+                        Text(
+                          'Birthday : ' + data!['birthday'], // 생일
+                          style: TextStyle(
+                            color: Color(0xff3E3E3E),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        SizedBox(height: 1),
+                        Text(
+                          'Age : ' + data!['age'], // 나이
+                          style: TextStyle(
+                            color: Color(0xff3E3E3E),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        SizedBox(height: 1),
+                        Text(
+                          'Gender : ' + data!['gender'], // 성별
+                          style: TextStyle(
+                            color: Color(0xff3E3E3E),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                       ],
                     ),

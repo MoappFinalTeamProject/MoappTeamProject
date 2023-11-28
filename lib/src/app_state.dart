@@ -3,7 +3,7 @@ import 'dart:core';
 
 import 'package:cloud_firestore/cloud_firestore.dart'; // new
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:moapp_team_project/src/member_info_cons.dart';
 
@@ -14,6 +14,7 @@ class ApplicationState extends ChangeNotifier {
 
   String _currentUserName = "";
   String get currentUserName => _currentUserName;
+
   void setCurrentUserName(String name) {
     _currentUserName = name;
     //notifyListeners();
@@ -124,6 +125,41 @@ class ApplicationState extends ChangeNotifier {
     return member.set(data);
   }
 
+  Future<List<String>> getProfilePics() async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+
+    final profilePicsRef = FirebaseFirestore.instance
+        .collection('member')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("member info")
+        .doc('profile pictures');
+
+    final profilePicsDoc = await profilePicsRef.get();
+    final profilePicsData = profilePicsDoc.data();
+
+    List<String> profilePicUrls = [];
+
+    try {
+      var url1 = await storage
+          .ref('profile/${profilePicsData?['pic1']}')
+          .getDownloadURL();
+      var url2 = await storage
+          .ref('profile/${profilePicsData?['pic2']}')
+          .getDownloadURL();
+      var url3 = await storage
+          .ref('profile/${profilePicsData?['pic3']}')
+          .getDownloadURL();
+
+      profilePicUrls.add(url1);
+      profilePicUrls.add(url2);
+      profilePicUrls.add(url3);
+    } catch (e) {
+      print(e);
+    }
+
+    return profilePicUrls;
+  }
+
   Future<void> addProfilePics(List<String> _url) {
     set_memberCount();
     if (!_loggedIn) {
@@ -147,7 +183,7 @@ class ApplicationState extends ChangeNotifier {
   }
 
   Future<void> updateInformation(
-      String name, String birthday, int age, String phoneNum) {
+      String name, String birthday, int age, String phoneNum) async {
     FirebaseFirestore.instance
         .collection('member')
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -168,6 +204,7 @@ class ApplicationState extends ChangeNotifier {
       'gender': _currentGenderIndex == 0 ? "M" : "W",
     });
     notifyListeners();
+
     return member;
   }
 }

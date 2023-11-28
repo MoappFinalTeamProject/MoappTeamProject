@@ -1,24 +1,28 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:moapp_team_project/controller/auth_controller.dart';
+import 'package:moapp_team_project/pages/profile_page/logout.dart';
 import 'package:moapp_team_project/pages/profile_page/matching_onboarding.dart';
 import 'package:moapp_team_project/pages/today_date_page/reprot_bug.dart';
+import 'package:provider/provider.dart';
 
-class HGUBalance extends StatefulWidget {
-  const HGUBalance({super.key});
+class Setting extends StatefulWidget {
+  const Setting({super.key});
 
   @override
-  State<HGUBalance> createState() => _HGUBalanceState();
+  State<Setting> createState() => _SettingState();
 }
 
-class _HGUBalanceState extends State<HGUBalance> {
+class _SettingState extends State<Setting> {
   @override
   Widget build(BuildContext context) {
+    final authController = Provider.of<AuthController>(context);
+
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 8.0),
           child: ListTile(
-            leading: SizedBox(
+            leading: const SizedBox(
               width: 24,
               height: 24,
             ),
@@ -81,7 +85,12 @@ class _HGUBalanceState extends State<HGUBalance> {
               ),
             ),
             onTap: () {
-              FirebaseAuth.instance.signOut();
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => Logout(
+                  authController: authController,
+                ),
+              );
             },
           ),
         ),
