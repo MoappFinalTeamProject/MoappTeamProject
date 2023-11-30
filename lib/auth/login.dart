@@ -118,6 +118,9 @@ class _MyLoginPageState extends State<MyLoginPage> {
                   .collection("member info")
                   .doc("basic info");
 
+              appstate.setImageUrl();
+              appstate.setSiteUrl();
+
               memberInformation.get().then(
                 (DocumentSnapshot doc) {
                   final data = doc.data() as Map<String, dynamic>;

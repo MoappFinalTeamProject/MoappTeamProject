@@ -50,6 +50,45 @@ class ApplicationState extends ChangeNotifier {
   List<MemberInfoCons> get memberInfo => _memberInfo;
 
 
+  List<String> _imageUrl = [];
+
+  List<String> get imageUrl => _imageUrl;
+  
+  void setImageUrl() {
+    final url = FirebaseFirestore.instance.collection("home").doc("image url");
+    url.get().then(
+      (DocumentSnapshot doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        for (int i = 0; i < data.length; i++) {
+          _imageUrl.add(data["${i}"]);
+          print(data["${i}"]);
+        }
+      },
+      onError: (e) => print("Error getting document: $e"),
+    );
+
+  }
+
+  List<Uri> _siteUrl = [];
+
+  List<Uri> get siteUrl => _siteUrl;
+  
+  void setSiteUrl() {
+    final url = FirebaseFirestore.instance.collection("home").doc("site url");
+    url.get().then(
+      (DocumentSnapshot doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        for (int i = 0; i < data.length; i++) {
+          _siteUrl.add(Uri.parse(data["${i}"]));
+          print(data["${i}"]); 
+        }
+      },
+      onError: (e) => print("Error getting document: $e"),
+    );
+
+  }
+
+
   Future<void> init() async {
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) {
@@ -141,13 +180,13 @@ class ApplicationState extends ChangeNotifier {
 
     try {
       var url1 = await storage
-          .ref('profile/${profilePicsData?['pic1']}')
+          .ref('profile/${FirebaseAuth.instance.currentUser!.uid}/image1.png')
           .getDownloadURL();
       var url2 = await storage
-          .ref('profile/${profilePicsData?['pic2']}')
+          .ref('profile/${FirebaseAuth.instance.currentUser!.uid}/image2.png')
           .getDownloadURL();
       var url3 = await storage
-          .ref('profile/${profilePicsData?['pic3']}')
+          .ref('profile/${FirebaseAuth.instance.currentUser!.uid}/image3.png')
           .getDownloadURL();
 
       profilePicUrls.add(url1);
@@ -207,4 +246,37 @@ class ApplicationState extends ChangeNotifier {
 
     return member;
   }
+
+  Future<List<String>> getHomeImageUrl() async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+
+    List<String> homImageUrls = [];
+
+    try {
+      var url1 = await 
+      FirebaseStorage.instance
+          .ref('home/menu.png')
+          .getDownloadURL();
+      var url2 = await storage
+          .ref('home/hisnet.png')
+          .getDownloadURL();
+      var url3 = await storage
+          .ref('home/youtube.png')
+          .getDownloadURL();
+
+      var url4 = await storage
+          .ref('home/news.png')
+          .getDownloadURL();
+
+      homImageUrls.add(url1);
+      homImageUrls.add(url2);
+      homImageUrls.add(url3);
+      homImageUrls.add(url4);
+    } catch (e) {
+      print(e);
+    }
+
+    return homImageUrls;
+  }
+  
 }

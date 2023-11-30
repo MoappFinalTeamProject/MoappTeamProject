@@ -3,6 +3,7 @@ import 'package:moapp_team_project/auth/login.dart';
 import 'package:moapp_team_project/auth/register.dart';
 
 import 'package:moapp_team_project/controller/auth_controller.dart';
+import 'package:moapp_team_project/pages/card_flip/cardFlip.dart';
 
 import 'package:moapp_team_project/pages/face_detection_page/face_detect_page.dart';
 
@@ -46,6 +47,7 @@ class FinalApp extends StatelessWidget {
           '/onBoard': (BuildContext context) => const OnBoardingPage(),
           '/faceDetect': (BuildContext context) => const MyFaceDetection(),
           '/googleMap': (BuildContext context) => const MyGoogleMapPage(),
+          '/cardFlip': (BuildContext context) => const MyCardFlipPage(),
         },
         theme: ThemeData.light(useMaterial3: true),
       ),

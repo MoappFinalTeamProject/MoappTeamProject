@@ -1,11 +1,13 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:moapp_team_project/src/app_state.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -16,14 +18,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<String> images = [
-    'https://picsum.photos/250?image=9',
-    'https://picsum.photos/250?image=9',
-    'https://picsum.photos/250?image=9',
-    'https://picsum.photos/250?image=9',
-    'https://picsum.photos/250?image=9',
-    'https://picsum.photos/250?image=9',
-    'https://picsum.photos/250?image=9',
-  ];
+    ];
+  
   int activeIndex = 1;
   Widget imageSlider(path, index) => Container(
         decoration: BoxDecoration(
@@ -32,7 +28,7 @@ class _MyHomePageState extends State<MyHomePage> {
         width: double.infinity,
         height: 240,
         //color: Colors.grey,
-        child: Image.network(path, fit: BoxFit.cover),
+        child: Image.network(path, fit: BoxFit.contain),
       );
 
   Widget indicator() => Container(
@@ -47,18 +43,12 @@ class _MyHomePageState extends State<MyHomePage> {
             activeDotColor: Colors.black,
             dotColor: Colors.grey.withOpacity(0.6)),
       ));
+
+      
   @override
   Widget build(BuildContext context) {
-    final appstate = Provider.of<ApplicationState>(context);
-    final FirebaseAuth _auth = FirebaseAuth.instance;
-    final docRef = FirebaseFirestore.instance
-        .collection("member")
-        .doc(_auth.currentUser!.uid)
-        .collection("member info")
-        .doc("basic info");
-    docRef.snapshots().listen((event) {
-      //appstate.setCurrentUserName(event.data()!["name"]);
-    });
+     final appState = Provider.of<ApplicationState>(context);
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text("Home Page"),
@@ -67,9 +57,10 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 12.0),
-            child: Text(appstate.currentUserName + " 님 환영합니다!\n",
+            child: Text(appState.currentUserName + " 님 환영합니다!\n",
                 style: const TextStyle(fontSize: 20)),
           ),
+          
           Column(
             children: [
               Stack(alignment: Alignment.bottomLeft, children: <Widget>[
@@ -86,10 +77,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       activeIndex = index;
                     }),
                   ),
-                  itemCount: images.length,
+                  itemCount: appState.imageUrl.length,
                   itemBuilder: (context, index, realIndex) {
-                    appstate.setCurrentImageSliderIndex(index);
-                    final path = images[index];
+                    appState.setCurrentImageSliderIndex(index);
+                    //print("index : ${index}");
+                    final path = appState.imageUrl[index];
                     return imageSlider(path, index);
                   },
                 ),
@@ -97,26 +89,25 @@ class _MyHomePageState extends State<MyHomePage> {
                   padding: const EdgeInsets.all(10.0),
                   child: ElevatedButton(
                       onPressed: () {
-                        switch (appstate.currentImageSliderIndex) {
-                          case 0:
-                            print("you press button 0");
-                          case 1:
-                            print("you press button 1");
-                          case 2:
-                            print("you press button 2");
-                          case 3:
-                            print("you press button 3");
-                          case 4:
-                            print("you press button 4");
-                          case 5:
-                            print("you press button 5");
-                        }
+                          launchUrl(appState.siteUrl[appState.currentImageSliderIndex]);
                       },
-                      child: Text(
-                          "${appstate.currentImageSliderIndex}번 컨텐츠 더 알아보기")),
+                      // child: Text(
+                      //     "${appState.currentImageSliderIndex}번 컨텐츠 더 알아보기")
+                      child: appState.currentImageSliderIndex == 0?
+                      Text("식단 정보 확인하기")
+                      :appState.currentImageSliderIndex == 1?
+                        Text("히즈넷 들어가기")
+                          :appState.currentImageSliderIndex == 2?
+                          Text("한동대 유튜브 들어가기")
+                            :appState.currentImageSliderIndex == 3?
+                            Text("한동대 소식 확인하기")
+                            :Text("error")
+                      ,
+                          ),
                 ),
               ]),
               Align(alignment: Alignment.bottomCenter, child: indicator()),
+              //카드 뒤집기 해서 오늘의 말씀 보여주기
               contentBox(
                 context,
                 1,
@@ -150,12 +141,27 @@ class _MyHomePageState extends State<MyHomePage> {
               const SizedBox(
                 height: 20,
               ),
+              contentBox(
+                context,
+                4,
+                Colors.lightBlue[50]!,
+                () {
+                  Navigator.pushNamed(context, '/cardFlip');
+                },
+                '카드 플립 테스트',
+                '카드플립 사용해보기',
+              ),
             ],
           ),
         ],
       ),
     );
   }
+  Future<void> _launchUrl(Uri site_url) async {
+  if (!await launchUrl(site_url)) {
+    throw Exception('Could not launch $site_url');
+  }
+}
 
   Padding contentBox(BuildContext context, int num, Color color, Function func,
       String boxContent, String buttonContent) {
