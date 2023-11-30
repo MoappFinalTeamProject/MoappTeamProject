@@ -41,7 +41,7 @@ class _MyInformationState extends State<MyInformation> {
       return CircularProgressIndicator();
     }
 
-    return Padding(
+    return SingleChildScrollView(
       padding: EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
         children: [

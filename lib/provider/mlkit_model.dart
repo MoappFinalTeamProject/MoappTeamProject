@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:moapp_team_project/provider/face_model.dart';
+import 'package:tuple/tuple.dart';
 
 class MLkitModel with ChangeNotifier {
   bool isOnProgress = false;
   List<Face> faceList = [];
   List<Rect> rectList = [];
   String label = "";
+  bool isFaceDetected = false;
+  int number = 0;
 
   void switchAIState(value) {
     isOnProgress = value;
@@ -22,7 +25,7 @@ class MLkitModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future getRecognizedFace(XFile image) async {
+  Future<Tuple2<bool, int>> getRecognizedFace(XFile image) async {
     switchAIState(true);
     clearRectList();
 
@@ -43,6 +46,7 @@ class MLkitModel with ChangeNotifier {
 
     switchAIState(false);
     notifyListeners();
+    return Tuple2<bool, int>(isFaceDetected, number);
   }
 
   Future<bool> watiFetchData() async {
@@ -89,8 +93,9 @@ class MLkitModel with ChangeNotifier {
     }
 
     if (response.isNotEmpty) {
-      int count = response.length;
-      label = "총 $count명의 얼굴 감지\n\n-감정 상태-\n";
+      number = response.length;
+      label = "총 $number명의 얼굴 감지\n\n-감정 상태-\n";
+      isFaceDetected = true;
 
       for (int i = 0; i < response.length; i++) {
         var temp = response[i];
@@ -106,6 +111,7 @@ class MLkitModel with ChangeNotifier {
       }
     } else {
       label = '얼굴이 감지되지 않습니다.';
+      isFaceDetected = false;
     }
     notifyListeners();
   }
