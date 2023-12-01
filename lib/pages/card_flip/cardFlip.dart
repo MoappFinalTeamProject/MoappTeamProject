@@ -41,9 +41,23 @@ class _MyCardFlipPageState extends State<MyCardFlipPage> {
           //print(status);
         },
         front: Container(
-          decoration: const BoxDecoration(
-            color: Color(0xFF006666),
-            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          decoration: BoxDecoration(
+            color: const Color(0xFF006666),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30.0),
+              topRight: Radius.circular(8.0),
+              bottomLeft: Radius.circular(8.0),
+              bottomRight: Radius.circular(30.0),
+            ),
+            border: Border.all(color: Colors.white, width: 2.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                spreadRadius: 2,
+                blurRadius: 5,
+                offset: Offset(0, 3),
+              ),
+            ],
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -88,9 +102,23 @@ class _MyCardFlipPageState extends State<MyCardFlipPage> {
           ),
         ),
         back: Container(
-          decoration: const BoxDecoration(
-            color: Color.fromARGB(255, 189, 24, 79),
-            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 189, 24, 79),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(8.0),
+              topRight: Radius.circular(30.0),
+              bottomLeft: Radius.circular(30.0),
+              bottomRight: Radius.circular(8.0),
+            ),
+            border: Border.all(color: Colors.white, width: 2.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                spreadRadius: 2,
+                blurRadius: 5,
+                offset: Offset(0, 3),
+              ),
+            ],
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -151,7 +179,7 @@ class _MyCardFlipPageState extends State<MyCardFlipPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Expanded(
-                flex: 4,
+                flex: 9,
                 child: _renderContent(context, result),
               ),
               Expanded(
