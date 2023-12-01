@@ -104,17 +104,26 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ]),
               Align(alignment: Alignment.bottomCenter, child: indicator()),
-              //카드 뒤집기 해서 오늘의 말씀 보여주기
               contentBox(
                 context,
-                1,
+                4,
                 Colors.lightBlue[50]!,
                 () {
-                  Navigator.pushNamed(context, '/gptPage');
+                  Navigator.pushNamed(context, '/cardFlip');
                 },
-                '오늘의 성경 구절 자동 추천 받기',
-                'chatGPT 사용해보기',
+                '연애 상담 받아보기',
+                '조언 받으러 가기',
               ),
+              // contentBox(
+              //   context,
+              //   1,
+              //   Colors.lightBlue[50]!,
+              //   () {
+              //     Navigator.pushNamed(context, '/gptPage');
+              //   },
+              //   '오늘의 성경 구절 자동 추천 받기',
+              //   'chatGPT 사용해보기',
+              // ),
               contentBox(
                 context,
                 2,
@@ -133,20 +142,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   Navigator.pushNamed(context, '/googleMap');
                 },
                 '내 위치 지도에서 찾기',
-                '페이지 이동',
+                '구글지도로 이동하기',
               ),
               const SizedBox(
                 height: 20,
-              ),
-              contentBox(
-                context,
-                4,
-                Colors.lightBlue[50]!,
-                () {
-                  Navigator.pushNamed(context, '/cardFlip');
-                },
-                '연애 상담 받아보기',
-                '조언 받으러 가기',
               ),
             ],
           ),
@@ -173,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
           color: color,
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,

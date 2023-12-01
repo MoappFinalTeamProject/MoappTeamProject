@@ -4,7 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:moapp_team_project/pages/chat_page/chat_google_map.dart';
+import 'package:moapp_team_project/pages/google_map_page/google_map.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 class ChatRoomUIPage extends StatefulWidget {
@@ -62,17 +65,30 @@ class _ChatRoomUIPageState extends State<ChatRoomUIPage>
               color: messageBarColor,
               padding: const EdgeInsets.symmetric(
                 vertical: 8,
-                horizontal: 16,
+                horizontal: 10,
               ),
               child: Row(
-                children: <Widget>[
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      getImage();
+                    },
+                    icon: const Icon(Icons.photo),
+                  ),
                   IconButton(
                       onPressed: () {
-                        getImage();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  MyChatGoogleMapPage(data: widget.data)),
+                        );
                       },
-                      icon: const Icon(Icons.photo)),
+                      icon: const Icon(
+                        Icons.location_on,
+                      )),
                   const SizedBox(
-                    width: 10,
+                    width: 3,
                   ),
                   Expanded(
                     child: TextField(
@@ -555,13 +571,17 @@ class _ChatRoomUIPageState extends State<ChatRoomUIPage>
                           itemBuilder: (context, index) {
                             var document = snapshot.data!.docs[index];
                             var data = document.data();
-                            var continuous = (index !=
-                                    snapshot.data!.size - 1 &&
-                                data['uid'] ==
-                                    snapshot.data!.docs[index + 1]
-                                        .data()['uid'] &&
-                                snapshot.data!.docs[index + 1].data()['type'] ==
-                                    'chat');
+                            var continuous =
+                                (index != snapshot.data!.size - 1 &&
+                                    data['uid'] ==
+                                        snapshot.data!.docs[index + 1]
+                                            .data()['uid'] &&
+                                    (snapshot.data!.docs[index + 1]
+                                                .data()['type'] ==
+                                            'chat' ||
+                                        snapshot.data!.docs[index + 1]
+                                                .data()['type'] ==
+                                            'location'));
                             bool isMine = (data['uid'] == uid);
 
                             return ChatMessageDesign(
@@ -694,6 +714,48 @@ class _ChatRoomUIPageState extends State<ChatRoomUIPage>
       // 문서가 없는 경우 처리
     }
   }
+
+  Future<Position> getCurrentLocation() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.low);
+    return position;
+  }
+
+  Future<void> _handleSubmittedLocatoin() async {
+    var gps = await getCurrentLocation();
+
+    final temp = FirebaseFirestore.instance
+        .collection('chatRoomsList')
+        .doc(widget.data['id'])
+        .collection('messages')
+        .doc();
+
+    FieldValue time = FieldValue.serverTimestamp();
+
+    var querySnapshot = await FirebaseFirestore.instance
+        .collection('member')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('member info')
+        .doc('basic info')
+        .get();
+
+    if (querySnapshot.exists) {
+      var userData = querySnapshot.data();
+      var userName = userData!['name'];
+      await temp.set({
+        "id": temp.id,
+        "uid": uid,
+        "created_at": time,
+        "location1": gps.latitude,
+        "location2": gps.longitude,
+        "name": userName,
+        "image_url": "",
+        "type": 'location',
+      });
+    } else {
+      // 문서가 없는 경우 처리
+    }
+  }
 }
 
 class ChatMessageDesign extends StatelessWidget {
@@ -746,6 +808,144 @@ class ChatMessageDesign extends StatelessWidget {
           ),
         ],
       );
+    } else if (data['type'] == 'location') {
+      if (isMine) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyGoogleMapPage(
+                  gps1: data["location1"],
+                  gps2: data["location2"],
+                  isMakePath: true,
+                ),
+              ),
+            );
+          },
+          child: Column(
+            children: [
+              BubbleSpecialOne(
+                text: "채팅을 눌러 위치 확인하기",
+                textStyle: const TextStyle(
+                  color: Colors.blue,
+                  fontSize: 16,
+                ),
+                color: const Color.fromARGB(100, 66, 99, 255),
+                tail: !isContinuous,
+                isSender: isMine,
+              ),
+              Row(
+                children: [
+                  const Expanded(
+                    child: SizedBox(
+                      width: 5,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    child: Container(
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * .4,
+                        maxHeight: MediaQuery.of(context).size.width * .4,
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(16)),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: Image.asset(
+                              'assets/images/google_map_chat.png',
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        );
+      } else {
+        return Padding(
+          padding: EdgeInsets.only(left: (!isContinuous) ? 0 : 46),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MyGoogleMapPage(
+                    gps1: data["location1"],
+                    gps2: data["location2"],
+                    isMakePath: true,
+                  ),
+                ),
+              );
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                (!isContinuous)
+                    ? CircleAvatar(
+                        radius: 23,
+                        child: Image.asset(
+                          'assets/temp_profile/doggy.png',
+                          scale: 17,
+                        ),
+                      )
+                    : Container(),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    BubbleSpecialOne(
+                      text: "채팅을 눌러 위치 확인하기",
+                      textStyle: const TextStyle(
+                        color: Colors.blue,
+                        fontSize: 16,
+                      ),
+                      color: const Color.fromARGB(100, 66, 99, 255),
+                      tail: !isContinuous,
+                      isSender: isMine,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                      child: Container(
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * .4,
+                          maxHeight: MediaQuery.of(context).size.width * .4,
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(16)),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Image.asset(
+                                'assets/images/google_map_chat.png',
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      }
     } else if (isMine) {
       return Column(
         children: [
