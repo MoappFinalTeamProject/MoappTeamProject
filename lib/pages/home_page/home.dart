@@ -17,9 +17,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<String> images = [
-    ];
-  
+  final List<String> images = [];
+
   int activeIndex = 1;
   Widget imageSlider(path, index) => Container(
         decoration: BoxDecoration(
@@ -44,11 +43,10 @@ class _MyHomePageState extends State<MyHomePage> {
             dotColor: Colors.grey.withOpacity(0.6)),
       ));
 
-      
   @override
   Widget build(BuildContext context) {
-     final appState = Provider.of<ApplicationState>(context);
-    
+    final appState = Provider.of<ApplicationState>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Home Page"),
@@ -60,7 +58,6 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Text(appState.currentUserName + " 님 환영합니다!\n",
                 style: const TextStyle(fontSize: 20)),
           ),
-          
           Column(
             children: [
               Stack(alignment: Alignment.bottomLeft, children: <Widget>[
@@ -88,36 +85,45 @@ class _MyHomePageState extends State<MyHomePage> {
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: ElevatedButton(
-                      onPressed: () {
-                          launchUrl(appState.siteUrl[appState.currentImageSliderIndex]);
-                      },
-                      // child: Text(
-                      //     "${appState.currentImageSliderIndex}번 컨텐츠 더 알아보기")
-                      child: appState.currentImageSliderIndex == 0?
-                      Text("식단 정보 확인하기")
-                      :appState.currentImageSliderIndex == 1?
-                        Text("히즈넷 들어가기")
-                          :appState.currentImageSliderIndex == 2?
-                          Text("한동대 유튜브 들어가기")
-                            :appState.currentImageSliderIndex == 3?
-                            Text("한동대 소식 확인하기")
-                            :Text("error")
-                      ,
-                          ),
+                    onPressed: () {
+                      launchUrl(
+                          appState.siteUrl[appState.currentImageSliderIndex]);
+                    },
+                    // child: Text(
+                    //     "${appState.currentImageSliderIndex}번 컨텐츠 더 알아보기")
+                    child: appState.currentImageSliderIndex == 0
+                        ? Text("식단 정보 확인하기")
+                        : appState.currentImageSliderIndex == 1
+                            ? Text("히즈넷 들어가기")
+                            : appState.currentImageSliderIndex == 2
+                                ? Text("한동대 유튜브 들어가기")
+                                : appState.currentImageSliderIndex == 3
+                                    ? Text("한동대 소식 확인하기")
+                                    : Text("error"),
+                  ),
                 ),
               ]),
               Align(alignment: Alignment.bottomCenter, child: indicator()),
-              //카드 뒤집기 해서 오늘의 말씀 보여주기
               contentBox(
                 context,
-                1,
+                4,
                 Colors.lightBlue[50]!,
                 () {
-                  Navigator.pushNamed(context, '/gptPage');
+                  Navigator.pushNamed(context, '/cardFlip');
                 },
-                '오늘의 성경 구절 자동 추천 받기',
-                'chatGPT 사용해보기',
+                '연애 상담 받아보기',
+                '조언 받으러 가기',
               ),
+              // contentBox(
+              //   context,
+              //   1,
+              //   Colors.lightBlue[50]!,
+              //   () {
+              //     Navigator.pushNamed(context, '/gptPage');
+              //   },
+              //   '오늘의 성경 구절 자동 추천 받기',
+              //   'chatGPT 사용해보기',
+              // ),
               contentBox(
                 context,
                 2,
@@ -125,8 +131,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 () {
                   Navigator.pushNamed(context, '/faceDetect');
                 },
-                '나의 사진 분석하기',
-                'MLkit 사용해보기',
+                '좋은 프로필 사진 골라보기',
+                '사진 고르러 가기',
               ),
               contentBox(
                 context,
@@ -135,21 +141,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 () {
                   Navigator.pushNamed(context, '/googleMap');
                 },
-                '나의 위치 찾기',
-                'GoogleMap 사용해보기',
+                '내 위치 지도에서 찾기',
+                '구글지도로 이동하기',
               ),
               const SizedBox(
                 height: 20,
-              ),
-              contentBox(
-                context,
-                4,
-                Colors.lightBlue[50]!,
-                () {
-                  Navigator.pushNamed(context, '/cardFlip');
-                },
-                '카드 플립 테스트',
-                '카드플립 사용해보기',
               ),
             ],
           ),
@@ -157,11 +153,12 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
   Future<void> _launchUrl(Uri site_url) async {
-  if (!await launchUrl(site_url)) {
-    throw Exception('Could not launch $site_url');
+    if (!await launchUrl(site_url)) {
+      throw Exception('Could not launch $site_url');
+    }
   }
-}
 
   Padding contentBox(BuildContext context, int num, Color color, Function func,
       String boxContent, String buttonContent) {
@@ -175,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
           color: color,
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,

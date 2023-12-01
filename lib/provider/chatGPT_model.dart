@@ -20,7 +20,7 @@ class GPTModel with ChangeNotifier {
         //  사용하는 모델
         model: 'gpt-3.5-turbo',
         //  출력의 최대 토큰 수 (기본값; 50)
-        maxTokens: 200,
+        maxTokens: 150,
         //  창의성, 수치와 비례함 (기본값: 0.5)
         temperature: 1,
         //  답변의 확률 분포 상위 p%, 단어의 다양성 (기본값: 1)
@@ -33,7 +33,7 @@ class GPTModel with ChangeNotifier {
           OpenAIChatCompletionChoiceMessageModel(
             content: [
               OpenAIChatCompletionChoiceMessageContentItemModel.text(
-                "다음 글의 내용을 보고 위로되는 성경 구절 하나 보여줘. <$prompt>",
+                "너는 지금 전문 연애 상담사야. 다음 글의 내용을 보고 한 줄의 조언을 해줘. <$prompt>",
               ),
             ],
             role: OpenAIChatMessageRole.user,

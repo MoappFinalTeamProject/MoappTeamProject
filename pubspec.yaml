@@ -33,6 +33,7 @@ dependencies:
   url_launcher: ^6.2.1
   flip_card: ^0.7.0
   tuple: ^2.0.2
+  flutter_polyline_points: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -48,4 +49,5 @@ flutter:
     - assets/config/.env
     - assets/icons/help.png
     - assets/icons/exit.png
+    - assets/images/google_map_chat.png
 
