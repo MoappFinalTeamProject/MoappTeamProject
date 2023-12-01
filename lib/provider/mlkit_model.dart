@@ -123,7 +123,9 @@ class MLkitModel with ChangeNotifier {
         label = label.substring(0, label.length - 2);
       }
     } else {
-      label = '얼굴이 감지되지 않습니다.';
+      label = '얼굴이 감지되지 않았어요!';
+      label += '\n\n';
+      label += '좀 더 얼굴이 잘보이는 사진을 골라보세요!';
       isFaceDetected = false;
     }
     notifyListeners();

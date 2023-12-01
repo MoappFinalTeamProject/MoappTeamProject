@@ -38,7 +38,7 @@ class _MyInformationState extends State<MyInformation> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return CircularProgressIndicator();
+      return Center(child: CircularProgressIndicator());
     }
 
     return SingleChildScrollView(
