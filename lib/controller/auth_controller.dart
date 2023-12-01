@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 class AuthController extends ChangeNotifier {
   final _user = FirebaseAuth.instance;
 
-  Future<void> logout() async {
-    //print(NavigationController().selectedIndex);
-    //await _user.signOut();
-    FirebaseAuth.instance.signOut();
+  Future<bool> logout() async {
+    try {
+      await _user.signOut();
+      return true;
+    } catch (e) {
+      print("Logout error: $e");
+      return false;
+    }
   }
 }

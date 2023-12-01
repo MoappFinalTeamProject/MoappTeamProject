@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:moapp_team_project/auth/login.dart';
 import 'package:moapp_team_project/controller/auth_controller.dart';
 import 'package:moapp_team_project/pages/profile_page/logout.dart';
 import 'package:moapp_team_project/pages/profile_page/matching_onboarding.dart';
@@ -17,84 +19,88 @@ class _SettingState extends State<Setting> {
   Widget build(BuildContext context) {
     final authController = Provider.of<AuthController>(context);
 
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: ListTile(
-            leading: const SizedBox(
-              width: 24,
-              height: 24,
-            ),
-            title: const Text(
-              '매칭 방법 확인하기',
-              style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w400,
-                color: Color(0xff3E3E3E),
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: ListTile(
+              leading: const SizedBox(
+                width: 24,
+                height: 24,
               ),
+              title: const Text(
+                '매칭 방법 확인하기',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xff3E3E3E),
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MatchingOnboarding()));
+              },
             ),
-            onTap: () {
-              Navigator.push(
+          ),
+          const Divider(
+            height: 10,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: ListTile(
+              leading: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: Image.asset("assets/icons/help.png")),
+              title: const Text(
+                '고객센터',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xff3E3E3E),
+                ),
+              ),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const ReportBug()));
+              },
+            ),
+          ),
+          const Divider(
+            height: 10,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: ListTile(
+              leading: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: Image.asset("assets/icons/exit.png")),
+              title: const Text(
+                '로그아웃',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xff3E3E3E),
+                ),
+              ),
+              onTap: () async {
+                await FirebaseAuth.instance.signOut();
+
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const MatchingOnboarding()));
-            },
-          ),
-        ),
-        const Divider(
-          height: 10,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: ListTile(
-            leading: SizedBox(
-                width: 24,
-                height: 24,
-                child: Image.asset("assets/icons/help.png")),
-            title: const Text(
-              '고객센터',
-              style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w400,
-                color: Color(0xff3E3E3E),
-              ),
+                    builder: (context) => MyLoginPage(),
+                  ),
+                );
+              },
             ),
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const ReportBug()));
-            },
           ),
-        ),
-        const Divider(
-          height: 10,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: ListTile(
-            leading: SizedBox(
-                width: 24,
-                height: 24,
-                child: Image.asset("assets/icons/exit.png")),
-            title: const Text(
-              '로그아웃',
-              style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w400,
-                color: Color(0xff3E3E3E),
-              ),
-            ),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) => Logout(
-                  authController: authController,
-                ),
-              );
-            },
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
