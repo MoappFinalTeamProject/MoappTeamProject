@@ -11,10 +11,13 @@ import 'package:moapp_team_project/pages/face_detection_page/face_detect_page.da
 import 'package:moapp_team_project/pages/feed_page/add_feed_page.dart';
 import 'package:moapp_team_project/pages/google_map_page/google_map.dart';
 import 'package:moapp_team_project/pages/navigation.dart';
+import 'package:moapp_team_project/pages/notification/notification.dart';
 import 'package:moapp_team_project/pages/onBorading_page/onBorading.dart';
+import 'package:moapp_team_project/pages/today_date_page/today_date.dart';
 import 'package:moapp_team_project/provider/chatGPT_model.dart';
 import 'package:moapp_team_project/pages/gpt_cheer_page/gpt_page.dart';
 import 'package:moapp_team_project/provider/mlkit_model.dart';
+import 'package:moapp_team_project/src/app_state.dart';
 
 import 'package:provider/provider.dart';
 
@@ -23,6 +26,12 @@ class FinalApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<ApplicationState>(context);
+
+    initNotification(context);
+    print("init done");
+    showNotification2();
+    print("show done");
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
@@ -53,6 +62,7 @@ class FinalApp extends StatelessWidget {
                 isMakePath: false,
               ),
           '/cardFlip': (BuildContext context) => const MyCardFlipPage(),
+          
         },
         theme: ThemeData.light(useMaterial3: true),
       ),

@@ -1,3 +1,4 @@
+import 'package:date_format/date_format.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:moapp_team_project/pages/chat_page/chat_room_list_page.dart';
@@ -6,6 +7,9 @@ import 'package:moapp_team_project/pages/home_page/home.dart';
 import 'package:moapp_team_project/pages/profile_page/profile_list_page.dart';
 import 'package:moapp_team_project/pages/today_date_page/today_date.dart';
 import 'package:moapp_team_project/pages/gpt_cheer_page/gpt_page.dart';
+import 'package:moapp_team_project/src/app_state.dart';
+import 'package:provider/provider.dart';
+import 'package:timer_builder/timer_builder.dart';
 
 class NavigationPage extends StatefulWidget {
   const NavigationPage({super.key});
@@ -18,6 +22,7 @@ class _NavigationPageState extends State<NavigationPage> {
   int currentPageIndex = 2;
   @override
   Widget build(BuildContext context) {
+    final appstate = Provider.of<ApplicationState>(context);
     final FirebaseAuth _auth = FirebaseAuth.instance;
     return Scaffold(
       bottomNavigationBar: NavigationBar(
@@ -66,7 +71,7 @@ class _NavigationPageState extends State<NavigationPage> {
         ],
       ),
       body: <Widget>[
-        const TodayDatePage(),
+        TodayDatePage(),
         const MyFeedPage(),
         const MyHomePage(),
         const MyChatRoomListPage(),

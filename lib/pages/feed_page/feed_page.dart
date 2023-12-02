@@ -19,7 +19,7 @@ class _MyFeedPageState extends State<MyFeedPage> {
   @override
   Widget build(BuildContext context) {
     ApplicationState userName = context.watch<ApplicationState>();
-
+    final appState = Provider.of<ApplicationState>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Feed'),
@@ -37,6 +37,7 @@ class _MyFeedPageState extends State<MyFeedPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            appState.checkTime(),
             const SizedBox(
               height: 15,
             ),
