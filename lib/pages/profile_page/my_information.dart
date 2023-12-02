@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:moapp_team_project/src/app_state.dart';
+import 'package:provider/provider.dart';
 
 class MyInformation extends StatefulWidget {
   const MyInformation({Key? key}) : super(key: key);
@@ -37,6 +39,7 @@ class _MyInformationState extends State<MyInformation> {
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<ApplicationState>(context);
     if (_isLoading) {
       return CircularProgressIndicator();
     }
@@ -45,6 +48,7 @@ class _MyInformationState extends State<MyInformation> {
       padding: EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
         children: [
+          appState.checkTime(),
           Padding(
             padding: EdgeInsets.all(24),
             child: Column(

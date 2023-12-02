@@ -1,11 +1,15 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:date_format/date_format.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:moapp_team_project/pages/notification/notification.dart';
 import 'package:moapp_team_project/src/app_state.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:timer_builder/timer_builder.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -17,6 +21,17 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // @override
+  // void initState(){
+
+  //   FlutterLocalNotification.init();
+
+  //   Future.delayed(const Duration(seconds: 3),
+  //     FlutterLocalNotification.requestNotificationPermission()
+  //   );
+  //   super.initState();
+  // }
+
   final List<String> images = [
     ];
   
@@ -48,7 +63,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
      final appState = Provider.of<ApplicationState>(context);
-    
     return Scaffold(
       appBar: AppBar(
         title: const Text("Home Page"),
@@ -63,6 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
           
           Column(
             children: [
+              appState.checkTime(),
               Stack(alignment: Alignment.bottomLeft, children: <Widget>[
                 CarouselSlider.builder(
                   options: CarouselOptions(
@@ -151,12 +166,26 @@ class _MyHomePageState extends State<MyHomePage> {
                 '카드 플립 테스트',
                 '카드플립 사용해보기',
               ),
+              const SizedBox(
+                height: 20,
+              ),
+              contentBox(
+                context,
+                4,
+                Colors.lightBlue[50]!,
+                () {
+                  showNotification2();
+                },
+                '알림 테스트',
+                '알림 기능 사용해보기',
+              ),
             ],
           ),
         ],
       ),
     );
   }
+
   Future<void> _launchUrl(Uri site_url) async {
   if (!await launchUrl(site_url)) {
     throw Exception('Could not launch $site_url');
@@ -205,4 +234,5 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+  
 }

@@ -353,7 +353,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       ),
     );
   }
-
+  
   PageModel page2(BuildContext context, List<SizedBox> spaceLevel) {
     return PageModel(
       widget: DecoratedBox(

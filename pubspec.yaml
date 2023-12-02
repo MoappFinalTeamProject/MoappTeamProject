@@ -33,6 +33,9 @@ dependencies:
   url_launcher: ^6.2.1
   flip_card: ^0.7.0
   tuple: ^2.0.2
+  flutter_local_notifications: 
+  date_format: ^2.0.7
+  timer_builder: ^2.0.0
 
 dev_dependencies:
   flutter_test:
