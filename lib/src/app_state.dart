@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:core';
 
 import 'package:cloud_firestore/cloud_firestore.dart'; // new
+import 'package:date_format/date_format.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:moapp_team_project/src/member_info_cons.dart';
+import 'package:timer_builder/timer_builder.dart';
 
 class ApplicationState extends ChangeNotifier {
   ApplicationState() {
@@ -40,6 +42,15 @@ class ApplicationState extends ChangeNotifier {
   void set_memberCount() {
     _memberCount++;
   }
+  bool _isFlipped = false;
+  bool get isFlipped => _isFlipped;
+  void setIsFlipped(){
+    if(_isFlipped)
+     _isFlipped = false;
+    else
+      _isFlipped = true;
+  }
+  List<String> profilePicUrls = [];
 
   bool _loggedIn = false;
   bool get loggedIn => _loggedIn;
@@ -54,6 +65,24 @@ class ApplicationState extends ChangeNotifier {
 
   List<String> get imageUrl => _imageUrl;
   
+
+  Map<String, dynamic>? _preference;
+
+  Map<String, dynamic>? get preference => _preference;
+
+  void setPreference(Map<String, dynamic> docData){
+  _preference = docData;
+  }
+
+  String _currentUserGender = "";
+  String get currentUserGender => _currentUserGender;
+  void setCurrentUserGender(String gender){
+    _currentUserGender = gender;
+  }
+    double _percentage = 0;
+    double get percentage => _percentage;
+    String partnerUid = "";
+
   void setImageUrl() {
     final url = FirebaseFirestore.instance.collection("home").doc("image url");
     url.get().then(
@@ -106,6 +135,7 @@ class ApplicationState extends ChangeNotifier {
                 email: document.data()['email'] as String,
                 uid: document.data()['uid'] as String,
                 time: document.data()['timestamp'] as int,
+                gender : document.data()['gender'] as String,
               ),
             );
           }
@@ -131,6 +161,7 @@ class ApplicationState extends ChangeNotifier {
       'email': FirebaseAuth.instance.currentUser!.email,
       'uid': FirebaseAuth.instance.currentUser!.uid,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
+      'gender' : ""
     };
 
     final member = FirebaseFirestore.instance
@@ -152,7 +183,7 @@ class ApplicationState extends ChangeNotifier {
       'birthday': "",
       'age': "",
       'phone number': "",
-      'gender': "",
+      'gender' : "",
     };
 
     final member = FirebaseFirestore.instance
@@ -199,6 +230,166 @@ class ApplicationState extends ChangeNotifier {
     return profilePicUrls;
   }
 
+  Future<void> addTodayDatePartner(String partnerUid, double percentage) {
+    final dataToPartner;
+    final dataToCurrentUser;
+
+    dataToPartner = <String, dynamic>{
+      'partner uid': FirebaseAuth.instance.currentUser!.uid
+    };
+
+    dataToCurrentUser = <String, dynamic>{
+      'partner uid': partnerUid,
+    };
+
+    final toParter = FirebaseFirestore.instance
+        .collection('member')
+        .doc(partnerUid)
+        .collection("today date partner")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .set(dataToPartner);
+
+    final toCurrentUser = FirebaseFirestore.instance
+        .collection('member')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("today date partner")
+        .doc(partnerUid);
+
+      final updateCurrentUserIsMatched = FirebaseFirestore.instance
+        .collection('member')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("preference")
+        .doc("percentage")
+        .collection("100 ~ 81") //TODO 필터 선호도 받으면 여기에도 파라미터로 전달
+        .doc("${percentage}") //TODO 필터 선호도 받으면 여기에도 파라미터로 전달
+        .update({
+      'is matched?': true,
+    });
+
+    final updatePartnerIsMatched = FirebaseFirestore.instance
+        .collection('member')
+        .doc(partnerUid)
+        .collection("preference")
+        .doc("percentage")
+        .collection("100 ~ 81") //TODO 필터 선호도 받으면 여기에도 파라미터로 전달
+        .doc("${percentage}") //TODO 필터 선호도 받으면 여기에도 파라미터로 전달
+        .update({
+      'is matched?': true,
+    });
+
+    notifyListeners();
+    return toCurrentUser.set(dataToCurrentUser);
+  }
+
+Future<void> removeTodayPartner() {
+
+      final removeTodayPartnerFromCurrentUser = FirebaseFirestore.instance
+        .collection('member')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("today date partner")
+        .doc(partnerUid)//TODO 필터 선호도 받으면 여기에도 파라미터로 전달
+        .delete();
+        
+    final removeTodayPartnerFromPartner = FirebaseFirestore.instance
+        .collection('member')
+        .doc(partnerUid)
+        .collection("today date partner")
+        .doc(FirebaseAuth.instance.currentUser!.uid)//TODO 필터 선호도 받으면 여기에도 파라미터로 전달
+        ;
+
+    notifyListeners();
+    return removeTodayPartnerFromPartner.delete();
+  }
+
+
+    Future<List<String>> getMatchedProfilePics() async {
+    _percentage = 0;
+    partnerUid = "";
+    final checkCurrentPartner = FirebaseFirestore.instance
+        .collection('member')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("today date partner");
+
+        checkCurrentPartner.get().then((value) async {
+          if(value.docs.isNotEmpty){
+            for (var data in value.docs){
+               partnerUid = data.data()["partner uid"];
+               print("partner uid is ${partnerUid}");
+               await getProfilesUrl(partnerUid);
+            }
+          }
+          else{
+            print("매칭 대상 찾기 시작");
+          final profilePicsRef = FirebaseFirestore.instance
+        .collection('member')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("preference")
+        .doc('percentage')
+        .collection("100 ~ 81") //TODO 유저에게 범위 설정받으면 됨.
+        .get()
+        .then((querySnapshot) async {
+      for (var docSnapshot in querySnapshot.docs) {
+        print("doc data is: ${docSnapshot.data()}");
+        if (!docSnapshot.data()["is matched?"]) {
+          if (docSnapshot.data()["detail percentage"] > percentage) {
+            _percentage = docSnapshot.data()["detail percentage"];
+            partnerUid = docSnapshot.data()["partner uid"];
+            print(partnerUid);
+          }
+        }
+      }
+      if(partnerUid == ""){
+        print("상대방이 없습니다");
+        profilePicUrls = [];
+        return profilePicUrls;
+      }
+      else{
+        print("work on eles");
+        addTodayDatePartner(partnerUid, percentage);
+        await getProfilesUrl(partnerUid).then((value){return profilePicUrls;});
+      }
+    });
+          }
+        });
+    return profilePicUrls;
+  }
+
+    Future<void> getProfilesUrl(String p_uid) async {
+      FirebaseStorage storage = FirebaseStorage.instance;
+          try {
+            var url1 = await storage
+                .ref('profile/${p_uid}/image1.png')
+                .getDownloadURL();
+            var url2 = await storage
+                .ref('profile/${p_uid}/image2.png')
+                .getDownloadURL();
+            var url3 = await storage
+                .ref('profile/${p_uid}/image3.png')
+                .getDownloadURL();
+      
+            profilePicUrls.add(url1);
+            profilePicUrls.add(url2);
+            profilePicUrls.add(url3);
+          } catch (e) {
+            print(e);
+          }
+          
+    }
+
+  TimerBuilder checkTime() {
+    return TimerBuilder.periodic(
+            const Duration(seconds: 1),
+            builder: (context) {
+              if(formatDate(DateTime.now(), [HH, ':', nn, ':', ss,]) == "13:13:00"){
+              _isFlipped = false;
+              print("test");
+              removeTodayPartner();
+              }
+              return Text("");
+            },
+          );
+  }
+
   Future<void> addProfilePics(List<String> _url) {
     set_memberCount();
     if (!_loggedIn) {
@@ -242,6 +433,13 @@ class ApplicationState extends ChangeNotifier {
       'phone number': phoneNum,
       'gender': _currentGenderIndex == 0 ? "M" : "W",
     });
+
+     final gender = FirebaseFirestore.instance
+        .collection('member')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update({
+      'gender': _currentGenderIndex == 0 ? "M" : "W",
+    });
     notifyListeners();
 
     return member;
@@ -278,5 +476,94 @@ class ApplicationState extends ChangeNotifier {
 
     return homImageUrls;
   }
-  
+
+    Future<void> addPreference(String uid, double percent) {
+    final data;
+    String percentage = "";
+    data = <String, dynamic>{
+      'detail percentage': percent,
+      'is matched?': false,
+      'timestamp': DateTime.now().millisecondsSinceEpoch,
+      'partner uid' : uid,
+    };
+    if(percent >= 81){
+      percentage = "100 ~ 81";
+    }
+    else if(percent >= 60){
+      percentage = "80 ~ 61";
+    }
+    else if(percent >= 40){
+      percentage = "60 ~ 41";
+    }
+    else if(percent >= 20){
+      percentage = "40 ~ 21";
+    }
+    else{
+      percentage = "20 ~ 0";
+    }
+    final member = FirebaseFirestore.instance
+        .collection('member')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("preference")
+        .doc("percentage")
+        .collection(percentage)
+        .doc("${percent}");
+    notifyListeners();
+    return member.set(data);
+  }
+
+  Future<void> fetchPreferences(ApplicationState appState) async {
+    final mySnapshot = await FirebaseFirestore.instance
+        .collection('member')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('member info')
+        .doc('preference');
+
+    mySnapshot.get().then(
+      (DocumentSnapshot myDoc) {
+        final myData = myDoc.data() as Map<String, dynamic>;
+        appState.setPreference(myData);
+      },
+    );
+
+    FirebaseFirestore.instance.collection('member').get().then((querySnapshot) {
+      for (var docSnapshot in querySnapshot.docs) {
+        int matchCount = 0;
+        int percent = 0;
+        if (docSnapshot.id != FirebaseAuth.instance.currentUser!.uid) {
+          if (docSnapshot.data()["gender"] != appState.currentUserGender) {
+            final otherSnapshot = FirebaseFirestore.instance
+                .collection('member')
+                .doc(docSnapshot.id)
+                .collection("member info")
+                .doc("preference");
+
+            otherSnapshot.get().then(
+              (DocumentSnapshot otherDoc) {
+                final otherData = otherDoc.data() as Map<String, dynamic>;
+                print("check");
+                appState.preference!.forEach((Mapkey, Mapvalue) {
+                  Mapvalue.forEach((key, value) {
+                    print(
+                        "key is :${key}, my value is : ${value}. other value is : ${otherData[Mapkey][key]}");
+                    if (value == true) percent++;
+                    if (otherData[Mapkey][key] != null) if (value &&
+                        otherData[Mapkey][key] == true) {
+                      matchCount++;
+                    }
+                  });
+                });
+                appState.addPreference(docSnapshot.id, matchCount / percent * 100);
+                if (matchCount / percent * 100 >= 80.0) {
+                  
+                }
+                print("per count : ${percent}");
+                print("match count : ${matchCount}");
+              },
+            );
+          }
+        }
+      }
+    });
+  }
 }

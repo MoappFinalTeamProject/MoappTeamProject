@@ -5,9 +5,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MemberInfoCons {
-  MemberInfoCons({required this.email, required this.uid, required this.time });
+  MemberInfoCons({required this.email, required this.uid, required this.time, required this.gender});
 
   final String email;
   final String uid;
   final int time;
+  final String gender;
 }

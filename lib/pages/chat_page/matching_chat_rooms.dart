@@ -1,19 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:moapp_team_project/pages/chat_page/feed_chat_page.dart';
 import 'package:moapp_team_project/pages/chat_page/matching_chat_page.dart';
+import 'package:moapp_team_project/src/app_state.dart';
+import 'package:provider/provider.dart';
 
 class MyMatchingChatRoomList extends StatelessWidget {
   const MyMatchingChatRoomList({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<ApplicationState>(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          appState.checkTime(),
           Expanded(
             child: StreamBuilder(
               stream: FirebaseFirestore.instance
