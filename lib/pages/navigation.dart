@@ -71,7 +71,7 @@ class _NavigationPageState extends State<NavigationPage> {
         ],
       ),
       body: <Widget>[
-        TodayDatePage(),
+        const TodayDatePage(),
         const MyFeedPage(),
         const MyHomePage(),
         const MyChatRoomListPage(),

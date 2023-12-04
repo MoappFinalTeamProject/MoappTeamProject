@@ -27,7 +27,6 @@ initNotification(context) async {
       //알림 누를때 함수실행하고 싶으면
       //onSelectNotification: 함수명추가
       onDidReceiveNotificationResponse: (payload) {
-        print("move!");
     // Navigator.of(context).push(
     //   MaterialPageRoute(
     //     builder: (context) => TodayDatePage(),
@@ -73,8 +72,6 @@ showNotification() async {
     }
   var now = tz.TZDateTime.now(tz.local);
   var when = tz.TZDateTime(tz.local, now.year, now.month, now.day, m_hour, min, sec);
-  print(now);
-  print(when);
   if (when.isBefore(now)) {
     return when.add(Duration(days: 1));
   } else {
@@ -103,7 +100,7 @@ showNotification2() async {
       2,
       '제목2',
       '내용2',
-      makeDate(13,13,00),
+      makeDate(23,18,50),
       NotificationDetails(android: androidDetails, iOS: iosDetails),
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation:
