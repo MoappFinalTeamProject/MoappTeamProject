@@ -49,7 +49,8 @@ class FinalApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         routes: {
           '/': (BuildContext context) => const NavigationPage(),
-          '/login': (BuildContext context) => const MyLoginPage(),
+          '/login': (BuildContext context) =>
+              appState.loggedIn ? const NavigationPage() : const MyLoginPage(),
           '/register': (BuildContext context) => const MyRegisterPage(),
           '/addFeed': (BuildContext context) => const AddFeedPage(),
           '/gptPage': (BuildContext context) => const MyGPTPage(),
