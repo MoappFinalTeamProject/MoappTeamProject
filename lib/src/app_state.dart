@@ -97,7 +97,6 @@ class ApplicationState extends ChangeNotifier {
         final data = doc.data() as Map<String, dynamic>;
         for (int i = 0; i < data.length; i++) {
           _imageUrl.add(data["${i}"]);
-
         }
       },
       onError: (e) => print("Error getting document: $e"),
@@ -317,8 +316,7 @@ class ApplicationState extends ChangeNotifier {
           notifyListeners();
           return profilePicUrls;
         }
-      } 
-      else {
+      } else {
         profilePicUrls = [];
         print("매칭 대상 찾기 시작");
         final profilePicsRef = FirebaseFirestore.instance
@@ -330,7 +328,8 @@ class ApplicationState extends ChangeNotifier {
           for (var docSnapshot in querySnapshot.docs) {
             print("doc data is: ${docSnapshot.data()}");
             if (docSnapshot.data()["detail percentage"] >= atLeastPerc) {
-              print("in db : ${docSnapshot.data()["detail percentage"]}  / at least : ${atLeastPerc}");
+              print(
+                  "in db : ${docSnapshot.data()["detail percentage"]}  / at least : ${atLeastPerc}");
               if (!docSnapshot.data()["is matched?"]) {
                 if (docSnapshot.data()["detail percentage"] > percentage) {
                   _percentage = docSnapshot.data()["detail percentage"];

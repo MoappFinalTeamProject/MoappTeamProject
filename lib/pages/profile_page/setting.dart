@@ -91,10 +91,8 @@ class _SettingState extends State<Setting> {
               ),
               onTap: () async {
                 await FirebaseAuth.instance.signOut();
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => MyLoginPage()),
-                  (Route<dynamic> route) => false,
-                );
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/login', (isLoggedIn) => false);
               },
             ),
           ),
