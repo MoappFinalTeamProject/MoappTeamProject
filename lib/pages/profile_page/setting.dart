@@ -8,7 +8,7 @@ import 'package:moapp_team_project/pages/profile_page/reprot_bug.dart';
 import 'package:provider/provider.dart';
 
 class Setting extends StatefulWidget {
-  const Setting({super.key});
+  const Setting({Key? key});
 
   @override
   State<Setting> createState() => _SettingState();
@@ -89,12 +89,9 @@ class _SettingState extends State<Setting> {
               ),
               onTap: () async {
                 await FirebaseAuth.instance.signOut();
-
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MyLoginPage(),
-                  ),
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => MyLoginPage()),
+                  (Route<dynamic> route) => false,
                 );
               },
             ),
