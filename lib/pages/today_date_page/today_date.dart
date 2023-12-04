@@ -139,10 +139,9 @@ class _TodayDatePageState extends State<TodayDatePage> {
   Widget build(BuildContext context) {
 
     final appState = Provider.of<ApplicationState>(context);
-    showNotification2().then(
-      setState(() {
-          }));
-    return Scaffold(
+    showNotification2();
+    return 
+    Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("오늘의 소개"),

@@ -385,7 +385,7 @@ class ApplicationState extends ChangeNotifier {
               ':',
               ss,
             ]) ==
-            "23:18:50") {
+            "23:55:20") {
           _isFlipped = false;
           print("test");
           removeTodayPartner();
