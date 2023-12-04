@@ -45,7 +45,27 @@ class _ProfileListPageState extends State<ProfileListPage>
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              title: Text('My Profile'),
+              title: Stack(
+                children: <Widget>[
+                  Text(
+                    'My Profile',
+                    style: TextStyle(
+                      // fontSize: 40,
+                      foreground: Paint()
+                        ..style = PaintingStyle.stroke
+                        ..strokeWidth = 2
+                        ..color = Colors.black54,
+                    ),
+                  ),
+                  const Text(
+                    'My Profile',
+                    style: TextStyle(
+                      // fontSize: 40,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
               expandedHeight: 500.0,
               floating: false,
               pinned: true,
