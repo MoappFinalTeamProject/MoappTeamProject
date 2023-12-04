@@ -10,8 +10,8 @@ class MyRegisterPage extends StatefulWidget {
   State<MyRegisterPage> createState() => _MyRegisterPageState();
 }
 
-class _MyRegisterPageState extends State<MyRegisterPage> 
-with SingleTickerProviderStateMixin{
+class _MyRegisterPageState extends State<MyRegisterPage>
+    with SingleTickerProviderStateMixin {
   late TabController tabController = TabController(
     length: 8,
     vsync: this,
@@ -25,7 +25,6 @@ with SingleTickerProviderStateMixin{
   late String _email = "";
   late String _password = "";
 
-
   @override
   Widget build(BuildContext context) {
     final appstate = Provider.of<ApplicationState>(context);
@@ -34,8 +33,7 @@ with SingleTickerProviderStateMixin{
       appBar: AppBar(
         title: const Text('회원가입 페이지'),
       ),
-      body: 
-      Form(
+      body: Form(
         key: _formKey,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -88,38 +86,40 @@ with SingleTickerProviderStateMixin{
                             ?.sendEmailVerification();
                         appstate.addMember();
                         appstate.addMemberInfo();
+                      appstate.addWishPercent(60);
                         Navigator.pop(context, '/');
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'weak-password') {
                           showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                                  title: const Text('weak-password'),
-                                  content: Text('비밀번호는 6자리 이상 입력해주세요'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text('취소'),
-                                    ),
-                                  ],
-                                ));
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    title: const Text('weak-password'),
+                                    content: Text('비밀번호는 6자리 이상 입력해주세요'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('취소'),
+                                      ),
+                                    ],
+                                  ));
                         } else if (e.code == 'email-already-in-use') {
                           showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                                  title: const Text('email-already-in-use'),
-                                  content: Text('이메일 계정이 이미 존재합니다. 다른 이메일을 입력해주세요'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text('취소'),
-                                    ),
-                                  ],
-                                ));
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    title: const Text('email-already-in-use'),
+                                    content: Text(
+                                        '이메일 계정이 이미 존재합니다. 다른 이메일을 입력해주세요'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('취소'),
+                                      ),
+                                    ],
+                                  ));
                           print('The account already exists for that email.');
                         }
                       } catch (e) {
@@ -140,5 +140,4 @@ with SingleTickerProviderStateMixin{
       ),
     );
   }
-  
 }
