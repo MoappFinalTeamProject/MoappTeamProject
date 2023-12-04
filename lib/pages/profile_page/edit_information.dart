@@ -197,7 +197,7 @@ class _EditInformationPageState extends State<EditInformationPage> {
                         GestureDetector(
                           child: imageUrl1 != null
                               ? Image.network(imageUrl1!)
-                              : Text('No image selected.'),
+                              : Text('사진 추가'),
                           onTap: () async {
                             await getImage(1);
                           },
@@ -208,7 +208,7 @@ class _EditInformationPageState extends State<EditInformationPage> {
                         GestureDetector(
                           child: imageUrl2 != null
                               ? Image.network(imageUrl2!)
-                              : Text('No image selected.'),
+                              : Text('사진 추가'),
                           onTap: () async {
                             await getImage(2);
                           },
@@ -219,7 +219,7 @@ class _EditInformationPageState extends State<EditInformationPage> {
                         GestureDetector(
                           child: imageUrl3 != null
                               ? Image.network(imageUrl3!)
-                              : Text('No image selected.'),
+                              : Text('사진 추가'),
                           onTap: () async {
                             await getImage(3);
                           },
