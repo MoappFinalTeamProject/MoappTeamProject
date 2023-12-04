@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:moapp_team_project/pages/chat_page/feed_chat_rooms.dart';
 import 'package:moapp_team_project/pages/chat_page/matching_chat_rooms.dart';
+import 'package:moapp_team_project/src/app_state.dart';
+import 'package:provider/provider.dart';
 
 class MyChatRoomListPage extends StatefulWidget {
   const MyChatRoomListPage({Key? key}) : super(key: key);

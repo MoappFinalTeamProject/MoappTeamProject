@@ -63,7 +63,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   @override
   Widget build(BuildContext context) {
     final appstate = Provider.of<ApplicationState>(context);
-    print("rebuild!");
     return Scaffold(
       body: OnbardingPages(context, appstate),
     );
@@ -353,7 +352,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       ),
     );
   }
-
+  
   PageModel page2(BuildContext context, List<SizedBox> spaceLevel) {
     return PageModel(
       widget: DecoratedBox(
@@ -650,7 +649,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           onToggle: (indexGender) {
             if (appstate.currentGenderIndex != indexGender)
               appstate.SetCurrentGenderIndex(indexGender!);
-            print('switched to: ${appstate.currentGenderIndex}');
           },
         ),
       ],
@@ -801,14 +799,11 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                         () async {
                       //print("product_count after : ${product_count}");
                       Reference _ref1 = FirebaseStorage.instance
-                          .ref()
-                          .child('profile/image1.png');
+                          .ref('profile/${FirebaseAuth.instance.currentUser!.uid}/image1.png');
                       Reference _ref2 = FirebaseStorage.instance
-                          .ref()
-                          .child('profile/image2.png');
+                          .ref('profile/${FirebaseAuth.instance.currentUser!.uid}/image2.png');
                       Reference _ref3 = FirebaseStorage.instance
-                          .ref()
-                          .child('profile/image3.png');
+                          .ref('profile/${FirebaseAuth.instance.currentUser!.uid}/image3.png');
                       List<String> _url = [
                         await _ref1.getDownloadURL(),
                         await _ref2.getDownloadURL(),

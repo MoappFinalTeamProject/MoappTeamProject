@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:moapp_team_project/pages/onBorading_page/onBorading.dart';
+import 'package:moapp_team_project/pages/today_date_page/today_date.dart';
 import 'package:moapp_team_project/src/app_state.dart';
 import 'package:moapp_team_project/auth/register.dart';
 import 'package:provider/provider.dart';
@@ -54,6 +55,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                   return null;
                 },
                 onChanged: (value) {
+
                   setState(() {
                     _email = value!;
                   });
@@ -98,6 +100,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
 
   ElevatedButton signWithEmail(
       BuildContext context, ApplicationState appstate) {
+        TodayDatePage todayDate ; 
     return ElevatedButton(
       onPressed: () async {
         if (_formKey.currentState!.validate()) {
@@ -117,13 +120,15 @@ class _MyLoginPageState extends State<MyLoginPage> {
                   .doc(FirebaseAuth.instance.currentUser!.uid)
                   .collection("member info")
                   .doc("basic info");
-
+              
               appstate.setImageUrl();
               appstate.setSiteUrl();
-
+              appstate.getWishPercent();
               memberInformation.get().then(
                 (DocumentSnapshot doc) {
                   final data = doc.data() as Map<String, dynamic>;
+                  appstate.setCurrentUserGender(data["gender"]);
+                  appstate.fetchPreferences(appstate);
                   //if (data["name"] == "new member") {
                   if (data["name"] == "") {
                     //  Navigator.of(context).push(

@@ -5,6 +5,7 @@ import 'package:moapp_team_project/controller/auth_controller.dart';
 import 'package:moapp_team_project/pages/profile_page/logout.dart';
 import 'package:moapp_team_project/pages/profile_page/matching_onboarding.dart';
 import 'package:moapp_team_project/pages/profile_page/reprot_bug.dart';
+import 'package:moapp_team_project/src/app_state.dart';
 import 'package:provider/provider.dart';
 
 class Setting extends StatefulWidget {
@@ -18,10 +19,11 @@ class _SettingState extends State<Setting> {
   @override
   Widget build(BuildContext context) {
     final authController = Provider.of<AuthController>(context);
-
+    final appState = Provider.of<ApplicationState>(context);
     return SingleChildScrollView(
       child: Column(
         children: [
+          appState.checkTime(),
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: ListTile(

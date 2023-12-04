@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:moapp_team_project/src/app_state.dart';
+import 'package:provider/provider.dart';
 
 class MyPreference extends StatefulWidget {
   const MyPreference({Key? key}) : super(key: key);
@@ -159,12 +161,14 @@ class _MyPreferenceState extends State<MyPreference> {
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<ApplicationState>(context);
     return Scaffold(
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            appState.checkTime(),
             buildCategory('취미', hobbyCategories),
             buildCategory('음식', foodCategories),
             buildCategory('전공', majorCategories),

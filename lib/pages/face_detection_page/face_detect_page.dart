@@ -40,7 +40,12 @@ class _MyFaceDetectionState extends State<MyFaceDetection> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('AI\'s face detection'),
+        title: const Text(
+          'AI로 좋은 프로필 사진 골라보기',
+          style: TextStyle(
+            fontSize: 17,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -119,7 +124,7 @@ class _MyFaceDetectionState extends State<MyFaceDetection> {
                                     child: CircularProgressIndicator(),
                                   )
                                 : Text((result.label.isEmpty)
-                                    ? '사진을 AI 분석해보세요!'
+                                    ? '프로필 사진을 분석해보세요!'
                                     : result.label),
                           ),
                         ),

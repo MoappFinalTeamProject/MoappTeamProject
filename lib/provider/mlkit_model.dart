@@ -94,8 +94,21 @@ class MLkitModel with ChangeNotifier {
 
     if (response.isNotEmpty) {
       number = response.length;
-      label = "총 $number명의 얼굴 감지\n\n-감정 상태-\n";
+      label = "총 $number명의 얼굴이 감지되었어요!";
       isFaceDetected = true;
+
+      if (number == 1 && (response[0].smile)! > 0.8) {
+        label += '\n\n';
+        label += "프로필 사진으로 사용하기 적합해요!";
+      } else if (number != 1) {
+        label += '\n\n';
+        label += "한 명의 얼굴이 있는 사진을 골라주세요!";
+      } else {
+        label += '\n\n';
+        label += "좀 더 밝게 웃는 사진을 골라보는건 어떨까요?";
+      }
+
+      label += "\n\n-분석된 감정 상태-\n";
 
       for (int i = 0; i < response.length; i++) {
         var temp = response[i];
@@ -117,14 +130,14 @@ class MLkitModel with ChangeNotifier {
   }
 
   String detectSmile(smileProb) {
-    if (smileProb > 0.86) {
-      return 'Big smile with teeth';
-    } else if (smileProb > 0.8) {
-      return 'Big Smile';
+    if (smileProb > 0.85) {
+      return '매우 큰 행복';
+    } else if (smileProb > 0.6) {
+      return '행복';
     } else if (smileProb > 0.3) {
-      return 'Smile';
+      return '보통';
     } else {
-      return 'Sad';
+      return '슬픔';
     }
   }
 }
