@@ -24,18 +24,9 @@ class _MatchingChatRoomPageState extends State<MatchingChatRoomPage>
   final uid = FirebaseAuth.instance.currentUser!.uid;
   XFile? image;
   final ImagePicker picker = ImagePicker();
-  String dropdownValue = "";
-  List<String> list2 = <String>[];
 
   @override
   void initState() {
-    dropdownValue = widget.data['group_size'];
-    for (int i = widget.data['participant'].length; i <= 10; i++) {
-      if (i == 1) {
-        i++;
-      }
-      list2.add(i.toString());
-    }
     super.initState();
   }
 
@@ -351,113 +342,6 @@ class _MatchingChatRoomPageState extends State<MatchingChatRoomPage>
                                       const SizedBox(
                                         height: 20,
                                       ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          const Text('인원수 설정:'),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Container(
-                                            width: 70,
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  color: Colors.grey), // 테두리 설정
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      4), // 모서리 둥글기 설정
-                                              color: Colors.white, // 배경색 설정
-                                            ),
-                                            child: Align(
-                                              alignment: Alignment.center,
-                                              child: DropdownButton<String>(
-                                                value: dropdownValue,
-                                                icon: const Icon(
-                                                    Icons.arrow_drop_down),
-                                                elevation: 16,
-                                                underline: Container(),
-                                                onChanged: (String? value) {
-                                                  setState(() {
-                                                    dropdownValue = value!;
-                                                  });
-                                                  FirebaseFirestore.instance
-                                                      .collection('feedList')
-                                                      .doc(widget.data['id'])
-                                                      .update({
-                                                    "group_size": dropdownValue,
-                                                  }).then((value) {
-                                                    FirebaseFirestore.instance
-                                                        .collection(
-                                                            'matchingChatRoomsList')
-                                                        .doc(widget.data['id'])
-                                                        .update({
-                                                      "group_size":
-                                                          dropdownValue,
-                                                    });
-                                                  });
-                                                  widget.data['group_size'] =
-                                                      dropdownValue;
-                                                },
-                                                items: list2.map<
-                                                        DropdownMenuItem<
-                                                            String>>(
-                                                    (String value) {
-                                                  return DropdownMenuItem<
-                                                      String>(
-                                                    value: value,
-                                                    child: Text(
-                                                      value,
-                                                      style: const TextStyle(
-                                                        fontSize: 16,
-                                                      ),
-                                                    ),
-                                                  );
-                                                }).toList(),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      ToggleSwitch(
-                                        customWidths: const [90.0, 50.0],
-                                        cornerRadius: 20.0,
-                                        activeBgColors: const [
-                                          [Colors.cyan],
-                                          [Colors.redAccent]
-                                        ],
-                                        activeFgColor: Colors.white,
-                                        inactiveBgColor: Colors.grey,
-                                        inactiveFgColor: Colors.white,
-                                        totalSwitches: 2,
-                                        initialLabelIndex:
-                                            (widget.data['isOpend']) ? 0 : 1,
-                                        labels: const ['입장 허용', ''],
-                                        icons: const [null, Icons.close],
-                                        onToggle: (index) {
-                                          FirebaseFirestore.instance
-                                              .collection('feedList')
-                                              .doc(widget.data['id'])
-                                              .update({
-                                            "isOpend": (index == 0),
-                                          }).then((value) {
-                                            FirebaseFirestore.instance
-                                                .collection(
-                                                    'matchingChatRoomsList')
-                                                .doc(widget.data['id'])
-                                                .update({
-                                              "isOpend": (index == 0),
-                                            });
-                                          });
-                                          widget.data['isOpend'] = (index == 0);
-                                        },
-                                      ),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
                                       ElevatedButton(
                                         onPressed: () {
                                           showDialog(
@@ -466,7 +350,7 @@ class _MatchingChatRoomPageState extends State<MatchingChatRoomPage>
                                               return AlertDialog(
                                                 title: const Center(
                                                   child: Text(
-                                                    '채팅방을 삭제하시겠습니까?',
+                                                    '채팅방을 나가시겠나요?\n다시 들어올 수 없습니다.',
                                                     style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
@@ -481,21 +365,7 @@ class _MatchingChatRoomPageState extends State<MatchingChatRoomPage>
                                                     TextButton(
                                                       onPressed: () {
                                                         removeGroup(widget.data,
-                                                                context)
-                                                            .then((value) {
-                                                          const snackBar =
-                                                              SnackBar(
-                                                            content: Text(
-                                                                '채팅방을 삭제했습니다!'),
-                                                            duration: Duration(
-                                                                milliseconds:
-                                                                    750),
-                                                          );
-                                                          ScaffoldMessenger.of(
-                                                                  context)
-                                                              .showSnackBar(
-                                                                  snackBar);
-                                                        });
+                                                            context);
                                                       },
                                                       child: const Text('예'),
                                                     ),
@@ -1020,10 +890,6 @@ Future<void> removeGroup(
       );
     },
   );
-  await FirebaseFirestore.instance
-      .collection('feedList')
-      .doc(data['id'])
-      .delete();
 
   QuerySnapshot messagesSnapshot = await FirebaseFirestore.instance
       .collection('matchingChatRoomsList')

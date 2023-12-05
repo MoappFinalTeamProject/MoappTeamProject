@@ -42,14 +42,16 @@ class ApplicationState extends ChangeNotifier {
   void set_memberCount() {
     _memberCount++;
   }
+
   bool _isFlipped = false;
   bool get isFlipped => _isFlipped;
-  void setIsFlipped(){
-    if(_isFlipped)
-     _isFlipped = false;
+  void setIsFlipped() {
+    if (_isFlipped)
+      _isFlipped = false;
     else
       _isFlipped = true;
   }
+
   List<String> profilePicUrls = [];
 
   bool _loggedIn = false;
@@ -60,28 +62,27 @@ class ApplicationState extends ChangeNotifier {
 
   List<MemberInfoCons> get memberInfo => _memberInfo;
 
-
   List<String> _imageUrl = [];
 
   List<String> get imageUrl => _imageUrl;
-  
 
   Map<String, dynamic>? _preference;
 
   Map<String, dynamic>? get preference => _preference;
 
-  void setPreference(Map<String, dynamic> docData){
-  _preference = docData;
+  void setPreference(Map<String, dynamic> docData) {
+    _preference = docData;
   }
 
   String _currentUserGender = "";
   String get currentUserGender => _currentUserGender;
-  void setCurrentUserGender(String gender){
+  void setCurrentUserGender(String gender) {
     _currentUserGender = gender;
   }
-    double _percentage = 0;
-    double get percentage => _percentage;
-    String partnerUid = "";
+
+  double _percentage = 0;
+  double get percentage => _percentage;
+  String partnerUid = "";
 
   void setImageUrl() {
     final url = FirebaseFirestore.instance.collection("home").doc("image url");
@@ -95,13 +96,12 @@ class ApplicationState extends ChangeNotifier {
       },
       onError: (e) => print("Error getting document: $e"),
     );
-
   }
 
   List<Uri> _siteUrl = [];
 
   List<Uri> get siteUrl => _siteUrl;
-  
+
   void setSiteUrl() {
     final url = FirebaseFirestore.instance.collection("home").doc("site url");
     url.get().then(
@@ -109,14 +109,12 @@ class ApplicationState extends ChangeNotifier {
         final data = doc.data() as Map<String, dynamic>;
         for (int i = 0; i < data.length; i++) {
           _siteUrl.add(Uri.parse(data["${i}"]));
-          print(data["${i}"]); 
+          print(data["${i}"]);
         }
       },
       onError: (e) => print("Error getting document: $e"),
     );
-
   }
-
 
   Future<void> init() async {
     FirebaseAuth.instance.userChanges().listen((user) {
@@ -135,7 +133,7 @@ class ApplicationState extends ChangeNotifier {
                 email: document.data()['email'] as String,
                 uid: document.data()['uid'] as String,
                 time: document.data()['timestamp'] as int,
-                gender : document.data()['gender'] as String,
+                gender: document.data()['gender'] as String,
               ),
             );
           }
@@ -161,7 +159,7 @@ class ApplicationState extends ChangeNotifier {
       'email': FirebaseAuth.instance.currentUser!.email,
       'uid': FirebaseAuth.instance.currentUser!.uid,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
-      'gender' : ""
+      'gender': ""
     };
 
     final member = FirebaseFirestore.instance
@@ -183,7 +181,7 @@ class ApplicationState extends ChangeNotifier {
       'birthday': "",
       'age': "",
       'phone number': "",
-      'gender' : "",
+      'gender': "",
     };
 
     final member = FirebaseFirestore.instance
@@ -255,7 +253,7 @@ class ApplicationState extends ChangeNotifier {
         .collection("today date partner")
         .doc(partnerUid);
 
-      final updateCurrentUserIsMatched = FirebaseFirestore.instance
+    final updateCurrentUserIsMatched = FirebaseFirestore.instance
         .collection('member')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("preference")
@@ -277,32 +275,56 @@ class ApplicationState extends ChangeNotifier {
       'is matched?': true,
     });
 
+    //  add chat room
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final tempId = FirebaseFirestore.instance // 저장
+        .collection('matchingChatRoomList')
+        .doc();
+
+    tempId.set({
+      'title': 'Matching chat Room',
+      'host': uid,
+      'id': tempId.id,
+      'participant': [uid],
+      'group_size': 2,
+      'isOpend': true,
+    });
+
+    FieldValue time = FieldValue.serverTimestamp();
+
+    FirebaseFirestore.instance
+        .collection('matchingChatRoomList')
+        .doc(tempId.id)
+        .update({
+      "participant": FieldValue.arrayUnion([partnerUid]),
+      partnerUid: time,
+    });
+
     notifyListeners();
     return toCurrentUser.set(dataToCurrentUser);
   }
 
-Future<void> removeTodayPartner() {
-
-      final removeTodayPartnerFromCurrentUser = FirebaseFirestore.instance
+  Future<void> removeTodayPartner() {
+    final removeTodayPartnerFromCurrentUser = FirebaseFirestore.instance
         .collection('member')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("today date partner")
-        .doc(partnerUid)//TODO 필터 선호도 받으면 여기에도 파라미터로 전달
+        .doc(partnerUid) //TODO 필터 선호도 받으면 여기에도 파라미터로 전달
         .delete();
-        
+
     final removeTodayPartnerFromPartner = FirebaseFirestore.instance
-        .collection('member')
-        .doc(partnerUid)
-        .collection("today date partner")
-        .doc(FirebaseAuth.instance.currentUser!.uid)//TODO 필터 선호도 받으면 여기에도 파라미터로 전달
+            .collection('member')
+            .doc(partnerUid)
+            .collection("today date partner")
+            .doc(FirebaseAuth
+                .instance.currentUser!.uid) //TODO 필터 선호도 받으면 여기에도 파라미터로 전달
         ;
 
     notifyListeners();
     return removeTodayPartnerFromPartner.delete();
   }
 
-
-    Future<List<String>> getMatchedProfilePics() async {
+  Future<List<String>> getMatchedProfilePics() async {
     _percentage = 0;
     partnerUid = "";
     final checkCurrentPartner = FirebaseFirestore.instance
@@ -310,84 +332,87 @@ Future<void> removeTodayPartner() {
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("today date partner");
 
-        checkCurrentPartner.get().then((value) async {
-          if(value.docs.isNotEmpty){
-            for (var data in value.docs){
-               partnerUid = data.data()["partner uid"];
-               print("partner uid is ${partnerUid}");
-               await getProfilesUrl(partnerUid);
+    checkCurrentPartner.get().then((value) async {
+      if (value.docs.isNotEmpty) {
+        for (var data in value.docs) {
+          partnerUid = data.data()["partner uid"];
+          print("partner uid is ${partnerUid}");
+          await getProfilesUrl(partnerUid);
+        }
+      } else {
+        print("매칭 대상 찾기 시작");
+        final profilePicsRef = FirebaseFirestore.instance
+            .collection('member')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection("preference")
+            .doc('percentage')
+            .collection("100 ~ 81") //TODO 유저에게 범위 설정받으면 됨.
+            .get()
+            .then((querySnapshot) async {
+          for (var docSnapshot in querySnapshot.docs) {
+            print("doc data is: ${docSnapshot.data()}");
+            if (!docSnapshot.data()["is matched?"]) {
+              if (docSnapshot.data()["detail percentage"] > percentage) {
+                _percentage = docSnapshot.data()["detail percentage"];
+                partnerUid = docSnapshot.data()["partner uid"];
+                print(partnerUid);
+              }
             }
           }
-          else{
-            print("매칭 대상 찾기 시작");
-          final profilePicsRef = FirebaseFirestore.instance
-        .collection('member')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection("preference")
-        .doc('percentage')
-        .collection("100 ~ 81") //TODO 유저에게 범위 설정받으면 됨.
-        .get()
-        .then((querySnapshot) async {
-      for (var docSnapshot in querySnapshot.docs) {
-        print("doc data is: ${docSnapshot.data()}");
-        if (!docSnapshot.data()["is matched?"]) {
-          if (docSnapshot.data()["detail percentage"] > percentage) {
-            _percentage = docSnapshot.data()["detail percentage"];
-            partnerUid = docSnapshot.data()["partner uid"];
-            print(partnerUid);
-          }
-        }
-      }
-      if(partnerUid == ""){
-        print("상대방이 없습니다");
-        profilePicUrls = [];
-        return profilePicUrls;
-      }
-      else{
-        print("work on eles");
-        addTodayDatePartner(partnerUid, percentage);
-        await getProfilesUrl(partnerUid).then((value){return profilePicUrls;});
-      }
-    });
+          if (partnerUid == "") {
+            print("상대방이 없습니다");
+            profilePicUrls = [];
+            return profilePicUrls;
+          } else {
+            print("work on eles");
+            addTodayDatePartner(partnerUid, percentage);
+            await getProfilesUrl(partnerUid).then((value) {
+              return profilePicUrls;
+            });
           }
         });
+      }
+    });
     return profilePicUrls;
   }
 
-    Future<void> getProfilesUrl(String p_uid) async {
-      FirebaseStorage storage = FirebaseStorage.instance;
-          try {
-            var url1 = await storage
-                .ref('profile/${p_uid}/image1.png')
-                .getDownloadURL();
-            var url2 = await storage
-                .ref('profile/${p_uid}/image2.png')
-                .getDownloadURL();
-            var url3 = await storage
-                .ref('profile/${p_uid}/image3.png')
-                .getDownloadURL();
-      
-            profilePicUrls.add(url1);
-            profilePicUrls.add(url2);
-            profilePicUrls.add(url3);
-          } catch (e) {
-            print(e);
-          }
-          
+  Future<void> getProfilesUrl(String p_uid) async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    try {
+      var url1 =
+          await storage.ref('profile/${p_uid}/image1.png').getDownloadURL();
+      var url2 =
+          await storage.ref('profile/${p_uid}/image2.png').getDownloadURL();
+      var url3 =
+          await storage.ref('profile/${p_uid}/image3.png').getDownloadURL();
+
+      profilePicUrls.add(url1);
+      profilePicUrls.add(url2);
+      profilePicUrls.add(url3);
+    } catch (e) {
+      print(e);
     }
+  }
 
   TimerBuilder checkTime() {
     return TimerBuilder.periodic(
-            const Duration(seconds: 1),
-            builder: (context) {
-              if(formatDate(DateTime.now(), [HH, ':', nn, ':', ss,]) == "13:13:00"){
-              _isFlipped = false;
-              print("test");
-              removeTodayPartner();
-              }
-              return Text("");
-            },
-          );
+      const Duration(seconds: 1),
+      builder: (context) {
+        if (formatDate(DateTime.now(), [
+              HH,
+              ':',
+              nn,
+              ':',
+              ss,
+            ]) ==
+            "13:13:00") {
+          _isFlipped = false;
+          print("test");
+          removeTodayPartner();
+        }
+        return Text("");
+      },
+    );
   }
 
   Future<void> addProfilePics(List<String> _url) {
@@ -434,7 +459,7 @@ Future<void> removeTodayPartner() {
       'gender': _currentGenderIndex == 0 ? "M" : "W",
     });
 
-     final gender = FirebaseFirestore.instance
+    final gender = FirebaseFirestore.instance
         .collection('member')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .update({
@@ -451,20 +476,12 @@ Future<void> removeTodayPartner() {
     List<String> homImageUrls = [];
 
     try {
-      var url1 = await 
-      FirebaseStorage.instance
-          .ref('home/menu.png')
-          .getDownloadURL();
-      var url2 = await storage
-          .ref('home/hisnet.png')
-          .getDownloadURL();
-      var url3 = await storage
-          .ref('home/youtube.png')
-          .getDownloadURL();
+      var url1 =
+          await FirebaseStorage.instance.ref('home/menu.png').getDownloadURL();
+      var url2 = await storage.ref('home/hisnet.png').getDownloadURL();
+      var url3 = await storage.ref('home/youtube.png').getDownloadURL();
 
-      var url4 = await storage
-          .ref('home/news.png')
-          .getDownloadURL();
+      var url4 = await storage.ref('home/news.png').getDownloadURL();
 
       homImageUrls.add(url1);
       homImageUrls.add(url2);
@@ -477,28 +494,24 @@ Future<void> removeTodayPartner() {
     return homImageUrls;
   }
 
-    Future<void> addPreference(String uid, double percent) {
+  Future<void> addPreference(String uid, double percent) {
     final data;
     String percentage = "";
     data = <String, dynamic>{
       'detail percentage': percent,
       'is matched?': false,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
-      'partner uid' : uid,
+      'partner uid': uid,
     };
-    if(percent >= 81){
+    if (percent >= 81) {
       percentage = "100 ~ 81";
-    }
-    else if(percent >= 60){
+    } else if (percent >= 60) {
       percentage = "80 ~ 61";
-    }
-    else if(percent >= 40){
+    } else if (percent >= 40) {
       percentage = "60 ~ 41";
-    }
-    else if(percent >= 20){
+    } else if (percent >= 20) {
       percentage = "40 ~ 21";
-    }
-    else{
+    } else {
       percentage = "20 ~ 0";
     }
     final member = FirebaseFirestore.instance
@@ -553,10 +566,9 @@ Future<void> removeTodayPartner() {
                     }
                   });
                 });
-                appState.addPreference(docSnapshot.id, matchCount / percent * 100);
-                if (matchCount / percent * 100 >= 80.0) {
-                  
-                }
+                appState.addPreference(
+                    docSnapshot.id, matchCount / percent * 100);
+                if (matchCount / percent * 100 >= 80.0) {}
                 print("per count : ${percent}");
                 print("match count : ${matchCount}");
               },

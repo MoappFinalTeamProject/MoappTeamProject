@@ -23,7 +23,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final List<String> images = [];
 
-
   int activeIndex = 1;
   Widget imageSlider(path, index) => Container(
         decoration: BoxDecoration(
@@ -150,32 +149,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 '내 위치 지도에서 찾기',
                 '구글지도로 이동하기',
               ),
+
+              // contentBox(
+              //   context,
+              //   4,
+              //   Colors.lightBlue[50]!,
+              //   () {
+              //     showNotification2();
+              //   },
+              //   '알림 테스트',
+              //   '알림 기능 사용해보기',
+              // ),
               const SizedBox(
                 height: 20,
-              ),
-              
-              contentBox(
-                context,
-                4,
-                Colors.lightBlue[50]!,
-                () {
-                  Navigator.pushNamed(context, '/cardFlip');
-                },
-                '카드 플립 테스트',
-                '카드플립 사용해보기',
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              contentBox(
-                context,
-                4,
-                Colors.lightBlue[50]!,
-                () {
-                  showNotification2();
-                },
-                '알림 테스트',
-                '알림 기능 사용해보기',
               ),
             ],
           ),
@@ -232,5 +218,4 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-  
 }

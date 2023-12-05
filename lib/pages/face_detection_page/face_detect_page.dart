@@ -144,13 +144,13 @@ class _MyFaceDetectionState extends State<MyFaceDetection> {
                     result.getRecognizedFace(image2!);
                   } else {
                     const snackBar = SnackBar(
-                      content: Text('사진을 지정해주세요!'),
+                      content: Text('사진을 골라주세요!'),
                       duration: Duration(milliseconds: 750),
                     );
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   }
                 },
-                child: const Text('submit'),
+                child: const Text('프로필 사진 제출'),
               ),
             ],
           ),
