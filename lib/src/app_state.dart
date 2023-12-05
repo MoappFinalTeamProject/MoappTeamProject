@@ -66,6 +66,12 @@ class ApplicationState extends ChangeNotifier {
 
   List<String> get imageUrl => _imageUrl;
 
+  double _atLeastPerc = 60;
+  double get atLeastPerc => _atLeastPerc;
+  void setAtLeastPerc(double leastValue) {
+    _atLeastPerc = leastValue;
+  }
+
   Map<String, dynamic>? _preference;
 
   Map<String, dynamic>? get preference => _preference;
@@ -91,7 +97,6 @@ class ApplicationState extends ChangeNotifier {
         final data = doc.data() as Map<String, dynamic>;
         for (int i = 0; i < data.length; i++) {
           _imageUrl.add(data["${i}"]);
-          print(data["${i}"]);
         }
       },
       onError: (e) => print("Error getting document: $e"),
@@ -109,7 +114,6 @@ class ApplicationState extends ChangeNotifier {
         final data = doc.data() as Map<String, dynamic>;
         for (int i = 0; i < data.length; i++) {
           _siteUrl.add(Uri.parse(data["${i}"]));
-          print(data["${i}"]);
         }
       },
       onError: (e) => print("Error getting document: $e"),
@@ -256,9 +260,7 @@ class ApplicationState extends ChangeNotifier {
     final updateCurrentUserIsMatched = FirebaseFirestore.instance
         .collection('member')
         .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection("preference")
-        .doc("percentage")
-        .collection("100 ~ 81") //TODO 필터 선호도 받으면 여기에도 파라미터로 전달
+        .collection("preference") //TODO 필터 선호도 받으면 여기에도 파라미터로 전달
         .doc("${percentage}") //TODO 필터 선호도 받으면 여기에도 파라미터로 전달
         .update({
       'is matched?': true,
@@ -267,37 +269,10 @@ class ApplicationState extends ChangeNotifier {
     final updatePartnerIsMatched = FirebaseFirestore.instance
         .collection('member')
         .doc(partnerUid)
-        .collection("preference")
-        .doc("percentage")
-        .collection("100 ~ 81") //TODO 필터 선호도 받으면 여기에도 파라미터로 전달
+        .collection("preference") //TODO 필터 선호도 받으면 여기에도 파라미터로 전달
         .doc("${percentage}") //TODO 필터 선호도 받으면 여기에도 파라미터로 전달
         .update({
       'is matched?': true,
-    });
-
-    //  add chat room
-    final uid = FirebaseAuth.instance.currentUser!.uid;
-    final tempId = FirebaseFirestore.instance // 저장
-        .collection('matchingChatRoomList')
-        .doc();
-
-    tempId.set({
-      'title': 'Matching chat Room',
-      'host': uid,
-      'id': tempId.id,
-      'participant': [uid],
-      'group_size': 2,
-      'isOpend': true,
-    });
-
-    FieldValue time = FieldValue.serverTimestamp();
-
-    FirebaseFirestore.instance
-        .collection('matchingChatRoomList')
-        .doc(tempId.id)
-        .update({
-      "participant": FieldValue.arrayUnion([partnerUid]),
-      partnerUid: time,
     });
 
     notifyListeners();
@@ -325,6 +300,7 @@ class ApplicationState extends ChangeNotifier {
   }
 
   Future<List<String>> getMatchedProfilePics() async {
+    //profilePicUrls = [];
     _percentage = 0;
     partnerUid = "";
     final checkCurrentPartner = FirebaseFirestore.instance
@@ -336,39 +312,42 @@ class ApplicationState extends ChangeNotifier {
       if (value.docs.isNotEmpty) {
         for (var data in value.docs) {
           partnerUid = data.data()["partner uid"];
-          print("partner uid is ${partnerUid}");
           await getProfilesUrl(partnerUid);
+          notifyListeners();
+          return profilePicUrls;
         }
       } else {
+        profilePicUrls = [];
         print("매칭 대상 찾기 시작");
         final profilePicsRef = FirebaseFirestore.instance
             .collection('member')
             .doc(FirebaseAuth.instance.currentUser!.uid)
-            .collection("preference")
-            .doc('percentage')
-            .collection("100 ~ 81") //TODO 유저에게 범위 설정받으면 됨.
+            .collection("preference") //TODO 유저에게 범위 설정받으면 됨.
             .get()
             .then((querySnapshot) async {
           for (var docSnapshot in querySnapshot.docs) {
             print("doc data is: ${docSnapshot.data()}");
-            if (!docSnapshot.data()["is matched?"]) {
-              if (docSnapshot.data()["detail percentage"] > percentage) {
-                _percentage = docSnapshot.data()["detail percentage"];
-                partnerUid = docSnapshot.data()["partner uid"];
-                print(partnerUid);
+            if (docSnapshot.data()["detail percentage"] >= atLeastPerc) {
+              print(
+                  "in db : ${docSnapshot.data()["detail percentage"]}  / at least : ${atLeastPerc}");
+              if (!docSnapshot.data()["is matched?"]) {
+                if (docSnapshot.data()["detail percentage"] > percentage) {
+                  _percentage = docSnapshot.data()["detail percentage"];
+                  partnerUid = docSnapshot.data()["partner uid"];
+                  getProfilesUrl(partnerUid);
+                  print(partnerUid);
+                }
               }
             }
           }
           if (partnerUid == "") {
             print("상대방이 없습니다");
-            profilePicUrls = [];
+            notifyListeners();
             return profilePicUrls;
           } else {
             print("work on eles");
             addTodayDatePartner(partnerUid, percentage);
-            await getProfilesUrl(partnerUid).then((value) {
-              return profilePicUrls;
-            });
+            notifyListeners();
           }
         });
       }
@@ -405,7 +384,7 @@ class ApplicationState extends ChangeNotifier {
               ':',
               ss,
             ]) ==
-            "13:13:00") {
+            "23:55:20") {
           _isFlipped = false;
           print("test");
           removeTodayPartner();
@@ -503,23 +482,10 @@ class ApplicationState extends ChangeNotifier {
       'timestamp': DateTime.now().millisecondsSinceEpoch,
       'partner uid': uid,
     };
-    if (percent >= 81) {
-      percentage = "100 ~ 81";
-    } else if (percent >= 60) {
-      percentage = "80 ~ 61";
-    } else if (percent >= 40) {
-      percentage = "60 ~ 41";
-    } else if (percent >= 20) {
-      percentage = "40 ~ 21";
-    } else {
-      percentage = "20 ~ 0";
-    }
     final member = FirebaseFirestore.instance
         .collection('member')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("preference")
-        .doc("percentage")
-        .collection(percentage)
         .doc("${percent}");
     notifyListeners();
     return member.set(data);
@@ -553,8 +519,7 @@ class ApplicationState extends ChangeNotifier {
 
             otherSnapshot.get().then(
               (DocumentSnapshot otherDoc) {
-                final otherData = otherDoc.data() as Map<String, dynamic>;
-                print("check");
+                final otherData = otherDoc.data()! as Map<String, dynamic>;
                 appState.preference!.forEach((Mapkey, Mapvalue) {
                   Mapvalue.forEach((key, value) {
                     print(
@@ -569,13 +534,42 @@ class ApplicationState extends ChangeNotifier {
                 appState.addPreference(
                     docSnapshot.id, matchCount / percent * 100);
                 if (matchCount / percent * 100 >= 80.0) {}
-                print("per count : ${percent}");
-                print("match count : ${matchCount}");
               },
             );
           }
         }
       }
     });
+  }
+
+  Future<void> addWishPercent(double leastValue) {
+    final data;
+    String percentage = "";
+    data = <String, dynamic>{
+      'wish percentage': leastValue,
+    };
+    final member = FirebaseFirestore.instance
+        .collection('member')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("wish percentage")
+        .doc("percentage");
+    notifyListeners();
+    return member.set(data);
+  }
+
+  Future<void> getWishPercent() async {
+    final docRef = await FirebaseFirestore.instance
+        .collection("member")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("wish percentage")
+        .doc("percentage");
+
+    docRef.get().then(
+      (DocumentSnapshot doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        setAtLeastPerc(data["wish percentage"]);
+      },
+      onError: (e) => print("Error getting document: $e"),
+    );
   }
 }

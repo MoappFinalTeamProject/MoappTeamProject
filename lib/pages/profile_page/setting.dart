@@ -9,7 +9,7 @@ import 'package:moapp_team_project/src/app_state.dart';
 import 'package:provider/provider.dart';
 
 class Setting extends StatefulWidget {
-  const Setting({super.key});
+  const Setting({Key? key});
 
   @override
   State<Setting> createState() => _SettingState();
@@ -30,6 +30,10 @@ class _SettingState extends State<Setting> {
               leading: const SizedBox(
                 width: 24,
                 height: 24,
+                child: Icon(
+                  Icons.person_outlined,
+                  color: Colors.black54,
+                ),
               ),
               title: const Text(
                 '매칭 방법 확인하기',
@@ -91,13 +95,8 @@ class _SettingState extends State<Setting> {
               ),
               onTap: () async {
                 await FirebaseAuth.instance.signOut();
-
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MyLoginPage(),
-                  ),
-                );
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/login', (isLoggedIn) => false);
               },
             ),
           ),

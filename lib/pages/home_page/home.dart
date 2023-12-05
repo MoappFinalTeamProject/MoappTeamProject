@@ -53,6 +53,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: Padding(
+          padding: const EdgeInsets.only(left : 12.0),
+            child: Image.asset('assets/images/1313.png', fit: BoxFit.contain),
+        ),
         title: const Text("Home Page"),
       ),
       body: ListView(

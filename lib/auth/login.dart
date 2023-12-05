@@ -128,6 +128,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
 
               appstate.setImageUrl();
               appstate.setSiteUrl();
+              appstate.getWishPercent();
               memberInformation.get().then(
                 (DocumentSnapshot doc) {
                   final data = doc.data() as Map<String, dynamic>;
@@ -143,7 +144,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                     Navigator.pushNamed(context, '/onBoard');
                   } else {
                     appstate.setCurrentUserName(data["name"]);
-                    Navigator.pop(context, '/');
+                    Navigator.pushNamed(context, '/');
                   }
                 },
                 onError: (e) => print("Error getting document: $e"),
