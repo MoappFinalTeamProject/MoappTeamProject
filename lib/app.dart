@@ -51,8 +51,7 @@ class FinalApp extends StatelessWidget {
         routes: {
           '/splash': (BuildContext context) => const SplashScreen(),
           '/': (BuildContext context) => const NavigationPage(),
-          '/login': (BuildContext context) =>
-              appState.loggedIn ? const NavigationPage() : const MyLoginPage(),
+          '/login': (BuildContext context) => const MyLoginPage(),
           '/register': (BuildContext context) => const MyRegisterPage(),
           '/addFeed': (BuildContext context) => const AddFeedPage(),
           '/gptPage': (BuildContext context) => const MyGPTPage(),

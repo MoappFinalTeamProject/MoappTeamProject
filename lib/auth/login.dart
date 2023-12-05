@@ -55,7 +55,6 @@ class _MyLoginPageState extends State<MyLoginPage> {
                   return null;
                 },
                 onChanged: (value) {
-
                   setState(() {
                     _email = value!;
                   });
@@ -100,7 +99,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
 
   ElevatedButton signWithEmail(
       BuildContext context, ApplicationState appstate) {
-        TodayDatePage todayDate ; 
+    TodayDatePage todayDate;
     return ElevatedButton(
       onPressed: () async {
         if (_formKey.currentState!.validate()) {
@@ -120,7 +119,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                   .doc(FirebaseAuth.instance.currentUser!.uid)
                   .collection("member info")
                   .doc("basic info");
-              
+
               appstate.setImageUrl();
               appstate.setSiteUrl();
               appstate.getWishPercent();
@@ -139,7 +138,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                     Navigator.pushNamed(context, '/onBoard');
                   } else {
                     appstate.setCurrentUserName(data["name"]);
-                    Navigator.pop(context, '/');
+                    Navigator.pushNamed(context, '/');
                   }
                 },
                 onError: (e) => print("Error getting document: $e"),
