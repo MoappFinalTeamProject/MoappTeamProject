@@ -8,6 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:moapp_team_project/src/member_info_cons.dart';
 import 'package:timer_builder/timer_builder.dart';
+import 'package:tuple/tuple.dart';
 
 class ApplicationState extends ChangeNotifier {
   ApplicationState() {
@@ -53,6 +54,7 @@ class ApplicationState extends ChangeNotifier {
   }
 
   List<String> profilePicUrls = [];
+  List<Tuple2<String, String>> result = [];
 
   bool _loggedIn = false;
   bool get loggedIn => _loggedIn;
@@ -299,7 +301,7 @@ class ApplicationState extends ChangeNotifier {
     return removeTodayPartnerFromPartner.delete();
   }
 
-  Future<List<String>> getMatchedProfilePics() async {
+  Future<List<Tuple2<String, String>>> getMatchedProfilePics() async {
     //profilePicUrls = [];
     _percentage = 0;
     partnerUid = "";
@@ -312,12 +314,14 @@ class ApplicationState extends ChangeNotifier {
       if (value.docs.isNotEmpty) {
         for (var data in value.docs) {
           partnerUid = data.data()["partner uid"];
+
           await getProfilesUrl(partnerUid);
-          notifyListeners();
-          return profilePicUrls;
+          //notifyListeners();
+          return result;
         }
       } else {
         profilePicUrls = [];
+        result.clear();
         print("매칭 대상 찾기 시작");
         final profilePicsRef = FirebaseFirestore.instance
             .collection('member')
@@ -334,7 +338,6 @@ class ApplicationState extends ChangeNotifier {
                 if (docSnapshot.data()["detail percentage"] > percentage) {
                   _percentage = docSnapshot.data()["detail percentage"];
                   partnerUid = docSnapshot.data()["partner uid"];
-                  getProfilesUrl(partnerUid);
                   print(partnerUid);
                 }
               }
@@ -342,17 +345,17 @@ class ApplicationState extends ChangeNotifier {
           }
           if (partnerUid == "") {
             print("상대방이 없습니다");
-            notifyListeners();
-            return profilePicUrls;
+            //notifyListeners();
           } else {
             print("work on eles");
+            getProfilesUrl(partnerUid);
             addTodayDatePartner(partnerUid, percentage);
-            notifyListeners();
+            //notifyListeners();
           }
         });
       }
     });
-    return profilePicUrls;
+    return result;
   }
 
   Future<void> getProfilesUrl(String p_uid) async {
@@ -368,6 +371,9 @@ class ApplicationState extends ChangeNotifier {
       profilePicUrls.add(url1);
       profilePicUrls.add(url2);
       profilePicUrls.add(url3);
+      result.add(Tuple2<String, String>(url1, p_uid));
+      result.add(Tuple2<String, String>(url2, p_uid));
+      result.add(Tuple2<String, String>(url3, p_uid));
     } catch (e) {
       print(e);
     }

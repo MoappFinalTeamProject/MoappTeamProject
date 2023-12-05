@@ -11,7 +11,6 @@ import 'package:moapp_team_project/pages/face_detection_page/face_detect_page.da
 import 'package:moapp_team_project/pages/feed_page/add_feed_page.dart';
 import 'package:moapp_team_project/pages/google_map_page/google_map.dart';
 import 'package:moapp_team_project/pages/navigation.dart';
-import 'package:moapp_team_project/pages/notification/notification.dart';
 import 'package:moapp_team_project/pages/onBorading_page/onBorading.dart';
 import 'package:moapp_team_project/pages/today_date_page/filter.dart';
 import 'package:moapp_team_project/pages/today_date_page/today_date.dart';
@@ -30,8 +29,6 @@ class FinalApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final appState = Provider.of<ApplicationState>(context);
     appState.checkTime();
-    initNotification(context);
-    showNotification2();
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(

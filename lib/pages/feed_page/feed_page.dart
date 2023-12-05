@@ -22,6 +22,10 @@ class _MyFeedPageState extends State<MyFeedPage> {
     final appState = Provider.of<ApplicationState>(context);
     return Scaffold(
       appBar: AppBar(
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: Image.asset('assets/images/1313.png', fit: BoxFit.contain),
+        ),
         title: const Text('Feed'),
         actions: [
           IconButton(

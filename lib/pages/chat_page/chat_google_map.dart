@@ -8,7 +8,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MyChatGoogleMapPage extends StatefulWidget {
   final Map<String, dynamic> data;
-  const MyChatGoogleMapPage({super.key, required this.data});
+  final bool isFeed;
+  const MyChatGoogleMapPage(
+      {super.key, required this.data, required this.isFeed});
 
   @override
   State<MyChatGoogleMapPage> createState() => _MyChatGoogleMapPageState();
@@ -44,7 +46,7 @@ class _MyChatGoogleMapPageState extends State<MyChatGoogleMapPage> {
     final uid = FirebaseAuth.instance.currentUser!.uid;
 
     final temp = FirebaseFirestore.instance
-        .collection('chatRoomsList')
+        .collection((widget.isFeed) ? 'chatRoomsList' : 'matchingChatRoomsList')
         .doc(data['id'])
         .collection('messages')
         .doc();

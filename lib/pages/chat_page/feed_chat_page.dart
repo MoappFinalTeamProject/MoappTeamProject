@@ -79,8 +79,10 @@ class _FeedChatRoomPageState extends State<FeedChatRoomPage>
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  MyChatGoogleMapPage(data: widget.data)),
+                              builder: (context) => MyChatGoogleMapPage(
+                                    data: widget.data,
+                                    isFeed: true,
+                                  )),
                         );
                       },
                       icon: const Icon(
