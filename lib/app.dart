@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moapp_team_project/auth/login.dart';
 import 'package:moapp_team_project/auth/register.dart';
+import 'package:moapp_team_project/color_schemes.g.dart';
 
 import 'package:moapp_team_project/controller/auth_controller.dart';
 import 'package:moapp_team_project/pages/card_flip/cardFlip.dart';
@@ -65,7 +66,8 @@ class FinalApp extends StatelessWidget {
           '/cardFlip': (BuildContext context) => const MyCardFlipPage(),
           '/filter': (BuildContext context) => const FilterDatePartnerPage(),
         },
-        theme: ThemeData.light(useMaterial3: true),
+        theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+        darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
       ),
     );
   }
