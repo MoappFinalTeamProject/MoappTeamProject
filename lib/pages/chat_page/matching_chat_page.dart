@@ -70,8 +70,10 @@ class _MatchingChatRoomPageState extends State<MatchingChatRoomPage>
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  MyChatGoogleMapPage(data: widget.data)),
+                              builder: (context) => MyChatGoogleMapPage(
+                                    data: widget.data,
+                                    isFeed: false,
+                                  )),
                         );
                       },
                       icon: const Icon(
@@ -239,7 +241,7 @@ class _MatchingChatRoomPageState extends State<MatchingChatRoomPage>
                                     scale: 12,
                                   ),
                                 ),
-                                title: Text('${data['name']} (방장)'),
+                                title: Text('${data['name']} (나)'),
                                 onTap: () {},
                               )
                             : ListTile(
@@ -258,7 +260,7 @@ class _MatchingChatRoomPageState extends State<MatchingChatRoomPage>
                                     scale: 12,
                                   ),
                                 ),
-                                title: Text('${data['name']}'),
+                                title: Text('${data['name']} (상대)'),
                                 onTap: () {},
                               ),
                       );
@@ -855,25 +857,21 @@ Future<void> exitGroup(Map<String, dynamic> data) async {
       .doc();
   FieldValue time = FieldValue.serverTimestamp();
 
-  FirebaseFirestore.instance.collection('feedList').doc(data['id']).update({
+  FirebaseFirestore.instance
+      .collection('matchingChatRoomsList')
+      .doc(data['id'])
+      .update({
     "participant": FieldValue.arrayRemove([uid]),
-  }).then((value) {
-    FirebaseFirestore.instance
-        .collection('matchingChatRoomsList')
-        .doc(data['id'])
-        .update({
-      "participant": FieldValue.arrayRemove([uid]),
-      uid: FieldValue.delete(),
-    });
+    uid: FieldValue.delete(),
   }).then((value) async => {
-        await temp.set({
-          "id": temp.id,
-          "uid": uid,
-          "created_at": time,
-          "type": 'out',
-          "image_url": "",
-        })
-      });
+            await temp.set({
+              "id": temp.id,
+              "uid": uid,
+              "created_at": time,
+              "type": 'out',
+              "image_url": "",
+            })
+          });
   ;
 }
 

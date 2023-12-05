@@ -45,6 +45,11 @@ class _ProfileListPageState extends State<ProfileListPage>
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
+              leading: Padding(
+                padding: const EdgeInsets.only(left: 12.0),
+                child:
+                    Image.asset('assets/images/1313.png', fit: BoxFit.contain),
+              ),
               title: Stack(
                 children: <Widget>[
                   Text(

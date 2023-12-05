@@ -20,7 +20,7 @@ class MyMatchingChatRoomList extends StatelessWidget {
           Expanded(
             child: StreamBuilder(
               stream: FirebaseFirestore.instance
-                  .collection('matchingChatRoomList')
+                  .collection('matchingChatRoomsList')
                   .where('participant',
                       arrayContains: FirebaseAuth.instance.currentUser!.uid)
                   .snapshots(),

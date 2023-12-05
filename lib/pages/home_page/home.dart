@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:moapp_team_project/pages/notification/notification.dart';
 import 'package:moapp_team_project/src/app_state.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -54,8 +53,8 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
-          padding: const EdgeInsets.only(left : 12.0),
-            child: Image.asset('assets/images/1313.png', fit: BoxFit.contain),
+          padding: const EdgeInsets.only(left: 12.0),
+          child: Image.asset('assets/images/1313.png', fit: BoxFit.contain),
         ),
         title: const Text("Home Page"),
       ),
