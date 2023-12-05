@@ -53,14 +53,16 @@ class _NavigationPageState extends State<NavigationPage> {
             label: '홈',
           ),
           NavigationDestination(
-            selectedIcon: Badge(
-              label: Text('2'),
-              child: Icon(Icons.messenger, color: Colors.pink),
-            ),
-            icon: Badge(
-              label: Text('2'),
-              child: Icon(Icons.messenger_outline),
-            ),
+            selectedIcon: Icon(Icons.messenger, color: Colors.pink),
+            // selectedIcon: Badge(
+            //   label: Text('2'),
+            //   child: Icon(Icons.messenger, color: Colors.pink),
+            // ),
+            icon: Icon(Icons.messenger_outline),
+            // icon: Badge(
+            //   label: Text('2'),
+            //   child: Icon(Icons.messenger_outline),
+            // ),
             label: '채팅',
           ),
           NavigationDestination(

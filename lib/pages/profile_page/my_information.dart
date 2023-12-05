@@ -41,7 +41,7 @@ class _MyInformationState extends State<MyInformation> {
   Widget build(BuildContext context) {
     final appState = Provider.of<ApplicationState>(context);
     if (_isLoading) {
-      return CircularProgressIndicator();
+      return Center(child: CircularProgressIndicator());
     }
 
     return SingleChildScrollView(

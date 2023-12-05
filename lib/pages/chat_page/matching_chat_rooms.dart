@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:moapp_team_project/pages/chat_page/chat_ui_page.dart';
+import 'package:moapp_team_project/pages/chat_page/matching_chat_page.dart';
 import 'package:moapp_team_project/src/app_state.dart';
 import 'package:provider/provider.dart';
 
@@ -36,7 +36,7 @@ class MyMatchingChatRoomList extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ChatRoomUIPage(
+                              builder: (context) => MatchingChatRoomPage(
                                 data: data,
                               ),
                             ),
@@ -48,15 +48,11 @@ class MyMatchingChatRoomList extends StatelessWidget {
                             height: MediaQuery.of(context).size.height * 0.15,
                             width: MediaQuery.of(context).size.width,
                             decoration: BoxDecoration(
-                              color: (index == 0)
-                                  ? Colors.white
-                                  : Colors.grey.shade300,
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(15),
                               border: Border.all(
                                 width: 2,
-                                color: (index == 0)
-                                    ? const Color.fromARGB(100, 66, 99, 255)
-                                    : Colors.black,
+                                color: const Color.fromARGB(100, 66, 99, 255),
                               ),
                             ),
                             child: Padding(
@@ -66,20 +62,11 @@ class MyMatchingChatRoomList extends StatelessWidget {
                               ),
                               child: Row(
                                 children: [
-                                  CircleAvatar(
-                                    backgroundColor: (index == 0)
-                                        ? const Color.fromARGB(100, 66, 99, 255)
-                                        : Colors.white,
+                                  const CircleAvatar(
                                     maxRadius: 28,
-                                    child: (index == 0)
-                                        ? const Badge(
-                                            label: Text('2'),
-                                            child:
-                                                Icon(Icons.messenger_outline),
-                                          )
-                                        : const Icon(
-                                            Icons.chat,
-                                          ),
+                                    child: Icon(
+                                      Icons.chat,
+                                    ),
                                   ),
                                   const SizedBox(
                                     width: 20,
@@ -91,19 +78,17 @@ class MyMatchingChatRoomList extends StatelessWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        (index == 0)
-                                            ? const Text(
-                                                '매칭 채팅방',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              )
-                                            : const Text(
-                                                '과거 채팅방',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
+                                        Text(
+                                          data['title'],
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          '참여자: (${data['participant'].length} / ${data['group_size']})',
+                                        ),
                                       ],
                                     ),
                                   ),

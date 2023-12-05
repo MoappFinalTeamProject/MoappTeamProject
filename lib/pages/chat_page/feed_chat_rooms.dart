@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:moapp_team_project/pages/chat_page/chat_ui_page.dart';
+import 'package:moapp_team_project/pages/chat_page/feed_chat_page.dart';
 import 'package:moapp_team_project/src/app_state.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +16,7 @@ class MyFeedChatRoomList extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-        appState.checkTime(),
+          appState.checkTime(),
           Expanded(
             child: StreamBuilder(
               stream: FirebaseFirestore.instance
@@ -36,7 +36,7 @@ class MyFeedChatRoomList extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ChatRoomUIPage(
+                              builder: (context) => FeedChatRoomPage(
                                 data: data,
                               ),
                             ),
