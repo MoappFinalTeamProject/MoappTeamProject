@@ -45,6 +45,7 @@ class _FilterDatePartnerPageState extends State<FilterDatePartnerPage> {
             ],
           ),
           Slider(
+            activeColor: Colors.pink[200],
             value: _currentSliderValue == 1? appState.atLeastPerc : _currentSliderValue,
             max: 100,
             divisions: 5,

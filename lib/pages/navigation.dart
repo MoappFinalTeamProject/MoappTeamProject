@@ -37,26 +37,26 @@ class _NavigationPageState extends State<NavigationPage> {
           NavigationDestination(
             selectedIcon: Icon(
               Icons.access_time_filled,
-              color: Colors.pink,
+              color: Colors.blue,
             ),
             icon: Icon(Icons.access_time),
             label: '오늘의 소개',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.feed, color: Colors.pink),
+            selectedIcon: Icon(Icons.feed, color: Colors.blue),
             icon: Icon(Icons.feed_outlined),
             label: '피드',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.home, color: Colors.pink),
+            selectedIcon: Icon(Icons.home, color: Colors.blue),
             icon: Icon(Icons.home_outlined),
             label: '홈',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.messenger, color: Colors.pink),
+            selectedIcon: Icon(Icons.messenger, color: Colors.blue),
             // selectedIcon: Badge(
             //   label: Text('2'),
-            //   child: Icon(Icons.messenger, color: Colors.pink),
+            //   child: Icon(Icons.messenger, color: Colors.blue),
             // ),
             icon: Icon(Icons.messenger_outline),
             // icon: Badge(
@@ -66,7 +66,7 @@ class _NavigationPageState extends State<NavigationPage> {
             label: '채팅',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.account_circle, color: Colors.pink),
+            selectedIcon: Icon(Icons.account_circle, color: Colors.blue),
             icon: Icon(Icons.account_circle_outlined),
             label: '프로필',
           ),

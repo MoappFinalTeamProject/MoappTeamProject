@@ -51,7 +51,7 @@ class _TodayDatePageState extends State<TodayDatePage> {
         flipOnTouch: appState.isFlipped ? false : true,
         front: Container(
           decoration: const BoxDecoration(
-            color: Color.fromARGB(255, 241, 211, 230),
+            color: Color.fromARGB(255, 255, 224, 243),
             borderRadius: BorderRadius.all(Radius.circular(10.0)),
           ),
           child: Column(
@@ -178,7 +178,6 @@ class _TodayDatePageState extends State<TodayDatePage> {
                                         }
                                       : null,
                                   style: ElevatedButton.styleFrom(
-                                      primary: Colors.pink[50],
                                       foregroundColor: Colors.black),
                                   child: const Text("매칭 신청")),
                             ],

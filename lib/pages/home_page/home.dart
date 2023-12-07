@@ -115,7 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
               contentBox(
                 context,
                 4,
-                Colors.lightBlue[50]!,
+              Color.fromARGB(255, 237,240,255),
                 () {
                   Navigator.pushNamed(context, '/cardFlip');
                 },
@@ -135,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
               contentBox(
                 context,
                 2,
-                Colors.pink[50]!,
+                Color.fromARGB(255, 216,226,255),
                 () {
                   Navigator.pushNamed(context, '/faceDetect');
                 },
@@ -145,7 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
               contentBox(
                 context,
                 3,
-                Colors.lightGreen[50]!,
+                Color.fromARGB(255, 174,198,255),
                 () {
                   Navigator.pushNamed(context, '/googleMap');
                 },

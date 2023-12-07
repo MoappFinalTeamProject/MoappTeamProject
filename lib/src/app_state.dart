@@ -330,17 +330,27 @@ class ApplicationState extends ChangeNotifier {
             .get()
             .then((querySnapshot) async {
           for (var docSnapshot in querySnapshot.docs) {
-            print("doc data is: ${docSnapshot.data()}");
+            //print("doc data is: ${docSnapshot.data()}");
             if (docSnapshot.data()["detail percentage"] >= atLeastPerc) {
-              print(
-                  "in db : ${docSnapshot.data()["detail percentage"]}  / at least : ${atLeastPerc}");
-              if (!docSnapshot.data()["is matched?"]) {
-                if (docSnapshot.data()["detail percentage"] > percentage) {
-                  _percentage = docSnapshot.data()["detail percentage"];
-                  partnerUid = docSnapshot.data()["partner uid"];
-                  print(partnerUid);
+              
+              final doesPartnerHavePartner = FirebaseFirestore.instance
+                  .collection('member')
+                  .doc(docSnapshot.data()["partner uid"])
+                  .collection("today date partner")
+                  .get()
+                  .then((value) async{
+                    print("there is no partner's partner");
+                if (value.docs.isEmpty) {
+                  if (!docSnapshot.data()["is matched?"]) {
+                    if (docSnapshot.data()["detail percentage"] > percentage) {
+                      _percentage = docSnapshot.data()["detail percentage"];
+                      partnerUid = docSnapshot.data()["partner uid"];
+                      getProfilesUrl(partnerUid);
+                      print(partnerUid);
+                    }
+                  }
                 }
-              }
+              });
             }
           }
           if (partnerUid == "") {
@@ -390,7 +400,7 @@ class ApplicationState extends ChangeNotifier {
               ':',
               ss,
             ]) ==
-            "23:55:20") {
+            "11:33:15") {
           _isFlipped = false;
           print("test");
           removeTodayPartner();

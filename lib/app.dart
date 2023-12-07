@@ -43,6 +43,10 @@ class FinalApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+      //  theme : ThemeData(
+      //   useMaterial3: true,
+      //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue),
+      //  ),
         title: '13:13',
         initialRoute: '/splash',
         debugShowCheckedModeBanner: false,
