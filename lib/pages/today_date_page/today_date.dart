@@ -132,14 +132,12 @@ class _TodayDatePageState extends State<TodayDatePage> {
                                                   .collection(
                                                       'matchingChatRoomsList')
                                                   .where('participant',
-                                                      arrayContains: uid)
-                                                  .where('partnerUserId',
-                                                      isEqualTo: partnerUserId)
+                                                      arrayContains:
+                                                          partnerUserId)
+                                                  .where(partnerUserId,
+                                                      isEqualTo: uid)
                                                   .get();
-                                          if (result.docs.length == 1) {
-                                            FieldValue time =
-                                                FieldValue.serverTimestamp();
-
+                                          if (result.docs.isNotEmpty) {
                                             String documentId =
                                                 result.docs[0].id;
 
@@ -149,13 +147,13 @@ class _TodayDatePageState extends State<TodayDatePage> {
                                                 .doc(documentId)
                                                 .update({
                                               "participant":
-                                                  FieldValue.arrayUnion(
-                                                      [partnerUserId]),
-                                              partnerUserId: time,
+                                                  FieldValue.arrayUnion([uid]),
+                                              //partnerUserId: time,
                                             });
                                           } else {
                                             //  add chat room
-
+                                            FieldValue time =
+                                                FieldValue.serverTimestamp();
                                             final tempId = FirebaseFirestore
                                                 .instance // 저장
                                                 .collection(
@@ -169,7 +167,15 @@ class _TodayDatePageState extends State<TodayDatePage> {
                                               'participant': [uid],
                                               'group_size': 2,
                                               'isOpend': true,
-                                            });
+                                            }).then((value) => {
+                                                  FirebaseFirestore.instance
+                                                      .collection(
+                                                          'matchingChatRoomsList')
+                                                      .doc(tempId.id)
+                                                      .update({
+                                                    partnerUserId: time,
+                                                  })
+                                                });
 
                                             // .then((value) => {
                                             //       FirebaseFirestore.instance
