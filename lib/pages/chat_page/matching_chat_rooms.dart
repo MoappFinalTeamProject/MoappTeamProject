@@ -31,71 +31,98 @@ class MyMatchingChatRoomList extends StatelessWidget {
                     itemBuilder: (context, index) {
                       var document = snapshot.data!.docs[index];
                       var data = document.data();
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MatchingChatRoomPage(
-                                data: data,
-                              ),
-                            ),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: Container(
-                            height: MediaQuery.of(context).size.height * 0.15,
-                            width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(15),
-                              border: Border.all(
-                                width: 2,
-                                color: const Color.fromARGB(100, 66, 99, 255),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 10,
-                              ),
-                              child: Row(
-                                children: [
-                                  const CircleAvatar(
-                                    maxRadius: 28,
-                                    child: Icon(
-                                      Icons.chat,
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Stack(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MatchingChatRoomPage(
+                                      data: data,
                                     ),
                                   ),
-                                  const SizedBox(
-                                    width: 20,
+                                );
+                              },
+                              child: Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.15,
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(15),
+                                  border: Border.all(
+                                    width: 2,
+                                    color:
+                                        const Color.fromARGB(100, 66, 99, 255),
                                   ),
-                                  Expanded(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          data['title'],
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Text(
-                                          '참여자: (${data['participant'].length} / ${data['group_size']})',
-                                        ),
-                                      ],
-                                    ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 10,
                                   ),
-                                ],
+                                  child: Row(
+                                    children: [
+                                      const CircleAvatar(
+                                        maxRadius: 28,
+                                        child: Icon(
+                                          Icons.chat,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 20,
+                                      ),
+                                      Expanded(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              data['title'],
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              '참여자: (${data['participant'].length} / ${data['group_size']})',
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                            (data['participant'].length == 2)
+                                ? const SizedBox.shrink()
+                                : Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.15,
+                                    width: MediaQuery.of(context).size.width,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(
+                                          15), // 모서리 둥글기 설정
+                                      color: Colors.black.withOpacity(0.8),
+                                    ),
+                                    child: const Center(
+                                      child: Text(
+                                        '상대 수락 대기중',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                          ],
                         ),
                       );
                     },
