@@ -205,7 +205,7 @@ class _TodayDatePageState extends State<TodayDatePage> {
                                       foregroundColor: Colors.black),
                                   child: (isOpened)
                                       ? const Text("매칭 신청하기")
-                                      : const Text('매칭 신청됨')),
+                                      : const Text('매칭 신청됨', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),)),
                             ],
                           ),
                         ],
