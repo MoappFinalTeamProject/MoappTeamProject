@@ -134,89 +134,52 @@ class _TodayDatePageState extends State<TodayDatePage> {
                               ),
                               ElevatedButton(
                                   onPressed: (isOpened)
-                                      ? () async {
+                                      ? () {
+                                          //  add chat room
                                           final uid = FirebaseAuth
                                               .instance.currentUser!.uid;
-                                          QuerySnapshot result =
-                                              await FirebaseFirestore
-                                                  .instance
-                                                  .collection(
-                                                      'matchingChatRoomsList')
-                                                  .where('participant',
-                                                      arrayContains:
-                                                          partnerUserId)
-                                                  .where(partnerUserId,
-                                                      isEqualTo: uid)
-                                                  .get();
-                                          if (result.docs.isNotEmpty) {
-                                            String documentId =
-                                                result.docs[0].id;
+                                          final tempId = FirebaseFirestore
+                                              .instance // 저장
+                                              .collection(
+                                                  'matchingChatRoomsList')
+                                              .doc();
 
-                                            await FirebaseFirestore.instance
-                                                .collection(
-                                                    'matchingChatRoomsList')
-                                                .doc(documentId)
-                                                .update({
-                                              "participant":
-                                                  FieldValue.arrayUnion([uid]),
-                                              //partnerUserId: time,
-                                            });
-                                          } else {
-                                            //  add chat room
-                                            FieldValue time =
-                                                FieldValue.serverTimestamp();
-                                            final tempId = FirebaseFirestore
-                                                .instance // 저장
-                                                .collection(
-                                                    'matchingChatRoomsList')
-                                                .doc();
+                                          FieldValue time =
+                                              FieldValue.serverTimestamp();
 
-                                            tempId.set({
-                                              'title': 'Matching ChatRoom',
-                                              'host': uid,
-                                              'id': tempId.id,
-                                              'participant': [uid],
-                                              'group_size': 2,
-                                              'isOpend': true,
-                                            }).then((value) => {
-                                                  FirebaseFirestore.instance
-                                                      .collection(
-                                                          'matchingChatRoomsList')
-                                                      .doc(tempId.id)
-                                                      .update({
-                                                    partnerUserId: time,
-                                                  })
-                                                });
-
-                                            // .then((value) => {
-                                            //       FirebaseFirestore.instance
-                                            //           .collection(
-                                            //               'matchingChatRoomsList')
-                                            //           .doc(tempId.id)
-                                            //           .update({
-                                            //         "participant":
-                                            //             FieldValue.arrayUnion(
-                                            //                 [partnerUserId]),
-                                            //         partnerUserId: time,
-                                            //       })
-                                            //     });
-                                            setState(() {
-                                              isOpened = false;
-                                            });
-                                            const snackBar = SnackBar(
-                                              content: Text('매칭되었습니다!'),
-                                              duration: Duration(seconds: 3),
-                                            );
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(snackBar);
-                                          }
+                                          tempId.set({
+                                            'title': 'Matching ChatRoom',
+                                            'host': uid,
+                                            'id': tempId.id,
+                                            'participant': [uid],
+                                            'group_size': 2,
+                                            'isOpend': true,
+                                          }).then((value) => {
+                                                FirebaseFirestore.instance
+                                                    .collection(
+                                                        'matchingChatRoomsList')
+                                                    .doc(tempId.id)
+                                                    .update({
+                                                  "participant":
+                                                      FieldValue.arrayUnion(
+                                                          [partnerUserId]),
+                                                  partnerUserId: time,
+                                                })
+                                              });
+                                          setState(() {
+                                            isOpened = false;
+                                          });
+                                          const snackBar = SnackBar(
+                                            content: Text('매칭되었습니다!'),
+                                            duration: Duration(seconds: 3),
+                                          );
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(snackBar);
                                         }
                                       : null,
                                   style: ElevatedButton.styleFrom(
                                       foregroundColor: Colors.black),
-                                  child: (isOpened)
-                                      ? const Text("매칭 신청하기")
-                                      : const Text('매칭 신청됨')),
+                                  child: const Text("매칭 신청")),
                             ],
                           ),
                         ],

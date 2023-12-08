@@ -114,7 +114,7 @@ class MyMatchingChatRoomList extends StatelessWidget {
                                     ),
                                     child: const Center(
                                       child: Text(
-                                        '상대 수락 대기중',
+                                        '닫힌 채팅방',
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 20,
