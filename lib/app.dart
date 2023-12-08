@@ -67,8 +67,7 @@ class FinalApp extends StatelessWidget {
           '/cardFlip': (BuildContext context) => const MyCardFlipPage(),
           '/filter': (BuildContext context) => const FilterDatePartnerPage(),
         },
-        theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
-        darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
+        theme: appState.isFlipped ? ThemeData(useMaterial3: true, colorScheme: darkColorScheme) : ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
       ),
     );
   }

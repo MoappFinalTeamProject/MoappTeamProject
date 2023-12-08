@@ -22,7 +22,7 @@ class ApplicationState extends ChangeNotifier {
     _currentUserName = name;
     //notifyListeners();
   }
-
+  
   int _currentImageSliderIndex = 0;
   int get currentImageSliderIndex => _currentImageSliderIndex;
   void setCurrentImageSliderIndex(int index) {

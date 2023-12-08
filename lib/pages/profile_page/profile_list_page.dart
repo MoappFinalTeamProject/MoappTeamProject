@@ -92,21 +92,25 @@ class _ProfileListPageState extends State<ProfileListPage>
                     if (!snapshot.hasData) {
                       return const Center(child: CircularProgressIndicator());
                     }
-                    return FlexibleSpaceBar(
-                      centerTitle: true,
-                      background: CarouselSlider(
-                        options: CarouselOptions(height: 500.0),
-                        items: snapshot.data!.map((i) {
-                          return Builder(
-                            builder: (BuildContext context) {
-                              return Container(
-                                width: MediaQuery.of(context).size.width,
-                                decoration: BoxDecoration(color: Colors.amber),
-                                child: Image.network(i, fit: BoxFit.cover),
-                              );
-                            },
-                          );
-                        }).toList(),
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 30 ),
+                      child: FlexibleSpaceBar(
+                        centerTitle: true,
+                        background: CarouselSlider(
+                          options: CarouselOptions(height:MediaQuery.of(context).size.height*0.40,),
+                          items: snapshot.data!.map((i) {
+                            return Builder(
+                              builder: (BuildContext context) {
+                                return Container(
+                                  height: 600,
+                                  width: MediaQuery.of(context).size.width,
+                                  decoration: BoxDecoration(color: Colors.amber),
+                                  child: Image.network(i, fit: BoxFit.cover),
+                                );
+                              },
+                            );
+                          }).toList(),
+                        ),
                       ),
                     );
                   }),
