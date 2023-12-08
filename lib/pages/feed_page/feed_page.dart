@@ -231,7 +231,7 @@ class _MyFeedPageState extends State<MyFeedPage> {
                                                 CircleAvatar(
                                                   maxRadius: 28,
                                                   child: Icon(
-                                                    Icons.abc,
+                                                    Icons.group,
                                                   ),
                                                 ),
                                               ],
