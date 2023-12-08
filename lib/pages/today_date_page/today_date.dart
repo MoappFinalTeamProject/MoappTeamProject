@@ -121,17 +121,6 @@ class _TodayDatePageState extends State<TodayDatePage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              TextButton(
-                                  onPressed: () {},
-                                  child: const Text(
-                                    "더 알아보기",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  )),
-                              const SizedBox(
-                                width: 10,
-                              ),
                               ElevatedButton(
                                   onPressed: (isOpened)
                                       ? () async {
