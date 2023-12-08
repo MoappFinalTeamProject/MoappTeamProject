@@ -148,7 +148,7 @@ class _TodayDatePageState extends State<TodayDatePage> {
                                               FieldValue.serverTimestamp();
 
                                           tempId.set({
-                                            'title': 'Matching chatRoom',
+                                            'title': 'Matching ChatRoom',
                                             'host': uid,
                                             'id': tempId.id,
                                             'participant': [uid],
@@ -179,7 +179,9 @@ class _TodayDatePageState extends State<TodayDatePage> {
                                       : null,
                                   style: ElevatedButton.styleFrom(
                                       foregroundColor: Colors.black),
-                                  child: const Text("매칭 신청")),
+                                  child: (isOpened)
+                                      ? const Text("매칭 신청하기")
+                                      : const Text('매칭 신청됨')),
                             ],
                           ),
                         ],
