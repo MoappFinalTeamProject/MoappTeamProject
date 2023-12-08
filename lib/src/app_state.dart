@@ -51,6 +51,7 @@ class ApplicationState extends ChangeNotifier {
       _isFlipped = false;
     else
       _isFlipped = true;
+    notifyListeners();
   }
 
   List<String> profilePicUrls = [];
@@ -320,6 +321,7 @@ class ApplicationState extends ChangeNotifier {
           return result;
         }
       } else {
+        int count = 0;
         profilePicUrls = [];
         result.clear();
         print("매칭 대상 찾기 시작");
@@ -330,9 +332,10 @@ class ApplicationState extends ChangeNotifier {
             .get()
             .then((querySnapshot) async {
           for (var docSnapshot in querySnapshot.docs) {
+            print(querySnapshot.docs.length);
             //print("doc data is: ${docSnapshot.data()}");
             if (docSnapshot.data()["detail percentage"] >= atLeastPerc) {
-              
+              print("works");
               final doesPartnerHavePartner = FirebaseFirestore.instance
                   .collection('member')
                   .doc(docSnapshot.data()["partner uid"])
@@ -342,7 +345,7 @@ class ApplicationState extends ChangeNotifier {
                     print("there is no partner's partner");
                 if (value.docs.isEmpty) {
                   if (!docSnapshot.data()["is matched?"]) {
-                    if (docSnapshot.data()["detail percentage"] > percentage) {
+                    if (docSnapshot.data()["detail percentage"] >= percentage) {
                       _percentage = docSnapshot.data()["detail percentage"];
                       partnerUid = docSnapshot.data()["partner uid"];
                       getProfilesUrl(partnerUid);
@@ -352,16 +355,19 @@ class ApplicationState extends ChangeNotifier {
                 }
               });
             }
+            count++;
           }
-          if (partnerUid == "") {
+          Future.delayed(const Duration(milliseconds: 500), () {
+              if (partnerUid == "" && count == querySnapshot.docs.length) {
             print("상대방이 없습니다");
             //notifyListeners();
-          } else {
+          } else if (partnerUid != "" && count == querySnapshot.docs.length) {
             print("work on eles");
             getProfilesUrl(partnerUid);
             addTodayDatePartner(partnerUid, percentage);
             //notifyListeners();
           }
+          });
         });
       }
     });

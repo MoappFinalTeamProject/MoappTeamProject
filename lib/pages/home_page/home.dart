@@ -99,13 +99,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     // child: Text(
                     //     "${appState.currentImageSliderIndex}번 컨텐츠 더 알아보기")
-                    child: appState.currentImageSliderIndex == 0
+                    child: appState.currentImageSliderIndex%4 == 0
                         ? Text("식단 정보 확인하기")
-                        : appState.currentImageSliderIndex == 1
+                        : appState.currentImageSliderIndex%4 == 1
                             ? Text("히즈넷 들어가기")
-                            : appState.currentImageSliderIndex == 2
+                            : appState.currentImageSliderIndex%4 == 2
                                 ? Text("한동대 유튜브 들어가기")
-                                : appState.currentImageSliderIndex == 3
+                                : appState.currentImageSliderIndex%4 == 3
                                     ? Text("한동대 소식 확인하기")
                                     : Text("error"),
                   ),
