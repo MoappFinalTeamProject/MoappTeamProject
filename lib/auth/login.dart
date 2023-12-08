@@ -129,6 +129,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
               appstate.setImageUrl();
               appstate.setSiteUrl();
               appstate.getWishPercent();
+              appstate.result.clear();
               memberInformation.get().then(
                 (DocumentSnapshot doc) {
                   final data = doc.data() as Map<String, dynamic>;

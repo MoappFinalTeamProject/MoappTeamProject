@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:moapp_team_project/src/app_state.dart';
+import 'package:provider/provider.dart';
 
 class Logout extends StatelessWidget {
   const Logout({Key? key, required this.authController}) : super(key: key);
@@ -7,6 +9,8 @@ class Logout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appstate = Provider.of<ApplicationState>(context);
+    appstate.result.clear();
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30.0),

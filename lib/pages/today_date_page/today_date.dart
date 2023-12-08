@@ -24,7 +24,6 @@ bool isOpened = true;
 class _TodayDatePageState extends State<TodayDatePage> {
   _renderContent(context, ApplicationState appState) {
     String partnerUserId = "";
-
     return Card(
       elevation: 0.0,
       margin: EdgeInsets.only(

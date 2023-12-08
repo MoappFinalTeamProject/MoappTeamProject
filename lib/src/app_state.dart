@@ -303,6 +303,7 @@ class ApplicationState extends ChangeNotifier {
   }
 
   Future<List<Tuple2<String, String>>> getMatchedProfilePics() async {
+
     //profilePicUrls = [];
     _percentage = 0;
     partnerUid = "";
@@ -317,13 +318,16 @@ class ApplicationState extends ChangeNotifier {
           partnerUid = data.data()["partner uid"];
 
           await getProfilesUrl(partnerUid);
-          //notifyListeners();
-          return result;
+          notifyListeners();
+          print(partnerUid);
+          Future.delayed(const Duration(milliseconds: 500), () {
+            return result;
+          });
         }
       } else {
+        result.clear();
         int count = 0;
         profilePicUrls = [];
-        result.clear();
         print("매칭 대상 찾기 시작");
         final profilePicsRef = FirebaseFirestore.instance
             .collection('member')
@@ -365,7 +369,7 @@ class ApplicationState extends ChangeNotifier {
             print("work on eles");
             getProfilesUrl(partnerUid);
             addTodayDatePartner(partnerUid, percentage);
-            //notifyListeners();
+            notifyListeners();
           }
           });
         });
@@ -406,10 +410,11 @@ class ApplicationState extends ChangeNotifier {
               ':',
               ss,
             ]) ==
-            "11:33:15") {
+            "19:50:20") {
           _isFlipped = false;
           print("test");
           removeTodayPartner();
+          result.clear();
         }
         return Text("");
       },
