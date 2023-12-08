@@ -105,7 +105,7 @@ class _ProfileListPageState extends State<ProfileListPage>
                                   height: 600,
                                   width: MediaQuery.of(context).size.width,
                                   decoration: BoxDecoration(color: Colors.amber),
-                                  child: Image.network(i, fit: BoxFit.fitWidth),
+                                  child: Image.network(i, fit: BoxFit.cover),
                                 );
                               },
                             );

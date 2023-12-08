@@ -22,7 +22,7 @@ class _NavigationPageState extends State<NavigationPage> {
   int currentPageIndex = 2;
   @override
   Widget build(BuildContext context) {
-    final appstate = Provider.of<ApplicationState>(context);
+    final appState = Provider.of<ApplicationState>(context);
     final FirebaseAuth _auth = FirebaseAuth.instance;
     return Scaffold(
       bottomNavigationBar: NavigationBar(
@@ -33,30 +33,31 @@ class _NavigationPageState extends State<NavigationPage> {
         },
         //indicatorColor: Colors.white,
         selectedIndex: currentPageIndex,
-        destinations: const <Widget>[
+        destinations: <Widget>[
           NavigationDestination(
             selectedIcon: Icon(
               Icons.access_time_filled,
-              color: Colors.blue,
+              color: appState.isFlipped ?Colors.pink:Colors.blue
             ),
             icon: Icon(Icons.access_time),
             label: '오늘의 소개',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.feed, color: Colors.blue),
+            selectedIcon: Icon(Icons.feed, 
+            color: appState.isFlipped ?Colors.pink:Colors.blue),
             icon: Icon(Icons.feed_outlined),
             label: '피드',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.home, color: Colors.blue),
+            selectedIcon: Icon(Icons.home, color: appState.isFlipped ?Colors.pink:Colors.blue),
             icon: Icon(Icons.home_outlined),
             label: '홈',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.messenger, color: Colors.blue),
+            selectedIcon: Icon(Icons.messenger, color: appState.isFlipped ?Colors.pink:Colors.blue),
             // selectedIcon: Badge(
             //   label: Text('2'),
-            //   child: Icon(Icons.messenger, color: Colors.blue),
+            //   child: Icon(Icons.messenger, color: appState.isFlipped ?Colors.pink:Colors.blue),
             // ),
             icon: Icon(Icons.messenger_outline),
             // icon: Badge(
@@ -66,7 +67,7 @@ class _NavigationPageState extends State<NavigationPage> {
             label: '채팅',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.account_circle, color: Colors.blue),
+            selectedIcon: Icon(Icons.account_circle, color: appState.isFlipped ?Colors.pink:Colors.blue),
             icon: Icon(Icons.account_circle_outlined),
             label: '프로필',
           ),
