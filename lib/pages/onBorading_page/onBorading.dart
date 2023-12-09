@@ -84,7 +84,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
         pages: [
           page1(context, spaceLevel, appstate),
           page2(context, spaceLevel),
-          page3(context, appstate),
+          // page3(context, appstate),
           page4(context, appstate, spaceLevel),
         ],
         onPageChange: (int pageIndex) {
@@ -313,46 +313,46 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     );
   }
 
-  PageModel page3(BuildContext context, ApplicationState appstate) {
-    return PageModel(
-      widget: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border.all(
-            width: 0.0,
-            color: Colors.yellow,
-          ),
-        ),
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.90,
-          child: SingleChildScrollView(
-            controller: ScrollController(),
-            child: const Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 45.0,
-              ),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 90),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        '나의 선호',
-                        style: pageStyle,
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                  ),
-                  MyPreference(),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-  
+  // PageModel page3(BuildContext context, ApplicationState appstate) {
+  //   return PageModel(
+  //     widget: DecoratedBox(
+  //       decoration: BoxDecoration(
+  //         border: Border.all(
+  //           width: 0.0,
+  //           color: Colors.yellow,
+  //         ),
+  //       ),
+  //       child: SizedBox(
+  //         height: MediaQuery.of(context).size.height * 0.90,
+  //         child: SingleChildScrollView(
+  //           controller: ScrollController(),
+  //           child: const Padding(
+  //             padding: EdgeInsets.symmetric(
+  //               horizontal: 45.0,
+  //             ),
+  //             child: Column(
+  //               children: [
+  //                 Padding(
+  //                   padding: EdgeInsets.symmetric(vertical: 90),
+  //                   child: Align(
+  //                     alignment: Alignment.centerLeft,
+  //                     child: Text(
+  //                       '나의 선호',
+  //                       style: pageStyle,
+  //                       textAlign: TextAlign.left,
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 MyPreference(),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
   PageModel page2(BuildContext context, List<SizedBox> spaceLevel) {
     return PageModel(
       widget: DecoratedBox(
@@ -500,11 +500,14 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
   Future<void> uploadImage(File? _image1, File? _image2, File? _image3) async {
     FirebaseStorage _storage = FirebaseStorage.instance;
-    Reference _ref1 = _storage.ref("profile/${FirebaseAuth.instance.currentUser!.uid}/image1.png");
+    Reference _ref1 = _storage
+        .ref("profile/${FirebaseAuth.instance.currentUser!.uid}/image1.png");
     _ref1.putFile(_image1!);
-    Reference _ref2 = _storage.ref("profile/${FirebaseAuth.instance.currentUser!.uid}/image2.png");
+    Reference _ref2 = _storage
+        .ref("profile/${FirebaseAuth.instance.currentUser!.uid}/image2.png");
     _ref2.putFile(_image2!);
-    Reference _ref3 = _storage.ref("profile/${FirebaseAuth.instance.currentUser!.uid}/image3.png");
+    Reference _ref3 = _storage
+        .ref("profile/${FirebaseAuth.instance.currentUser!.uid}/image3.png");
     _ref3.putFile(_image3!);
   }
 
@@ -798,12 +801,12 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                     Future.delayed(const Duration(milliseconds: 1000),
                         () async {
                       //print("product_count after : ${product_count}");
-                      Reference _ref1 = FirebaseStorage.instance
-                          .ref('profile/${FirebaseAuth.instance.currentUser!.uid}/image1.png');
-                      Reference _ref2 = FirebaseStorage.instance
-                          .ref('profile/${FirebaseAuth.instance.currentUser!.uid}/image2.png');
-                      Reference _ref3 = FirebaseStorage.instance
-                          .ref('profile/${FirebaseAuth.instance.currentUser!.uid}/image3.png');
+                      Reference _ref1 = FirebaseStorage.instance.ref(
+                          'profile/${FirebaseAuth.instance.currentUser!.uid}/image1.png');
+                      Reference _ref2 = FirebaseStorage.instance.ref(
+                          'profile/${FirebaseAuth.instance.currentUser!.uid}/image2.png');
+                      Reference _ref3 = FirebaseStorage.instance.ref(
+                          'profile/${FirebaseAuth.instance.currentUser!.uid}/image3.png');
                       List<String> _url = [
                         await _ref1.getDownloadURL(),
                         await _ref2.getDownloadURL(),
